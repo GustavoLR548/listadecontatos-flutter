@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "172407211228",
+    "project_id": "listacontatosapp",
+    "storage_bucket": "listacontatosapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:172407211228:android:16566aeaae65a0d3ed2019",
+        "android_client_info": {
+          "package_name": "com.example.listadecontatos"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "172407211228-snopnbrueg3p9ud73e7039l2563krcna.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCPm7b9exuM_C2U3kvoy0Oemr6ZeaTHUFM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "172407211228-snopnbrueg3p9ud73e7039l2563krcna.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
