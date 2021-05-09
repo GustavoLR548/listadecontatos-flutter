@@ -1,22 +1,22 @@
 import 'package:flutter/cupertino.dart';
 
 class Contato with ChangeNotifier {
-  int _id;
+  String _creatorId;
   String _nome;
   String _email;
   String _endereco;
   String _cep;
   String _telefone;
 
-  Contato(this._id, this._nome, this._email, this._endereco, this._cep,
+  Contato(this._creatorId, this._nome, this._email, this._endereco, this._cep,
       this._telefone);
 
-  int get id {
-    return this._id;
+  String get creatorId {
+    return this._creatorId;
   }
 
-  set id(int id) {
-    this._id = id;
+  set creatorId(String creatorId) {
+    this._creatorId = creatorId;
   }
 
   String get nome {
