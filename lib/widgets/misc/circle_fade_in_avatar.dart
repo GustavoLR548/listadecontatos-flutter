@@ -4,9 +4,11 @@ class CircleFadeInAvatar extends StatelessWidget {
   final String profilePicture;
   final int widthVariation;
   final String placeholderPath;
+  final double size;
 
   CircleFadeInAvatar(
     this.profilePicture, [
+    this.size = 125,
     this.widthVariation = 0,
     this.placeholderPath = 'assets/images/icon.jpg',
   ]);
@@ -15,8 +17,8 @@ class CircleFadeInAvatar extends StatelessWidget {
     return ClipOval(
         clipper: CircleRevealClipper(this.widthVariation),
         child: FadeInImage(
-          width: 125,
-          height: 125,
+          width: this.size,
+          height: this.size,
           fit: BoxFit.fitWidth,
           placeholder: AssetImage(this.placeholderPath),
           image: NetworkImage(this.profilePicture),

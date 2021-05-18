@@ -65,8 +65,8 @@ class _AuthScreenState extends State<AuthScreen> {
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  const Color.fromRGBO(215, 117, 255, 1).withOpacity(0.5),
-                  const Color.fromRGBO(69, 129, 230, 1).withOpacity(0.9),
+                  Theme.of(context).primaryColor.withOpacity(0.5),
+                  Theme.of(context).accentColor.withOpacity(0.9),
                 ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
@@ -90,7 +90,7 @@ class _AuthScreenState extends State<AuthScreen> {
                       // ..translate(-10.0),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(20),
-                        color: Colors.green,
+                        color: Colors.teal,
                         boxShadow: [
                           const BoxShadow(
                             blurRadius: 8,
@@ -100,7 +100,7 @@ class _AuthScreenState extends State<AuthScreen> {
                         ],
                       ),
                       child: Text(
-                        'Educa',
+                        'Contatos',
                         style: Theme.of(context)
                             .textTheme
                             .headline3

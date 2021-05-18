@@ -1,26 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:listadecontatos/provider/auth.dart';
 import 'package:listadecontatos/screens/Configuration.dart';
+import 'package:listadecontatos/screens/ContatoEditor.dart';
 import 'package:listadecontatos/widgets/drawer/drawer_item.dart';
 import 'package:provider/provider.dart';
 
 class AppDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final userData = Provider.of<Auth>(context).currUser;
+
     return Drawer(
-        child: Column(
+        child: ListView(
+      padding: EdgeInsets.zero,
       children: [
-        AppBar(
-          backgroundColor: Theme.of(context).primaryColor,
-          title: Text(
-            'Contatos',
-            style: Theme.of(context)
-                .textTheme
-                .headline3
-                ?.copyWith(color: Colors.white),
-          ),
-          automaticallyImplyLeading: false,
-        ),
+        DrawerHeader(
+            decoration: BoxDecoration(color: Theme.of(context).primaryColor),
+            child: Row(
+              children: [
+                Icon(
+                  Icons.portrait_rounded,
+                  size: 75,
+                ),
+                Text(
+                  'Contatos',
+                  style: Theme.of(context).textTheme.headline1,
+                )
+              ],
+            )),
         Divider(),
         DrawerItem(
           title: Text(
@@ -32,13 +39,13 @@ class AppDrawer extends StatelessWidget {
         ),
         Divider(),
         DrawerItem(
-          title: Text(
-            'Adicionar contato',
-            style: Theme.of(context).textTheme.headline1,
-          ),
-          icon: Icon(Icons.person_add),
-          onTap: () => Navigator.of(context).pushNamed(Configuration.routeName),
-        ),
+            title: Text(
+              'Adicionar contato',
+              style: Theme.of(context).textTheme.headline1,
+            ),
+            icon: Icon(Icons.person_add),
+            onTap: () => Navigator.of(context).push(MaterialPageRoute<void>(
+                builder: (context) => ContatoEditor()))),
         Divider(),
         DrawerItem(
             title: Text(

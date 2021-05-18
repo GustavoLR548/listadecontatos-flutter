@@ -58,4 +58,14 @@ class Contato with ChangeNotifier {
   set telefone(String telefone) {
     this._telefone = telefone;
   }
+
+  String get initials {
+    String result = '';
+    var split = nome.split(' ');
+
+    int length = split.length >= 3 ? 3 : split.length;
+    for (int i = 0; i < length; i++) result += split[i][0];
+
+    return result;
+  }
 }
