@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:listadecontatos/models/contato.dart';
 import 'package:listadecontatos/provider/contatos.dart';
 import 'package:listadecontatos/provider/themes.dart';
 import 'package:provider/provider.dart';
+import 'package:via_cep_flutter/via_cep_flutter.dart';
 
 class ContatoEditor extends StatefulWidget {
   final Contato? contato;
@@ -14,6 +16,7 @@ class ContatoEditor extends StatefulWidget {
 
 class _ContatoEditorState extends State<ContatoEditor> {
   final GlobalKey<FormState> _formKey = GlobalKey();
+  final TextEditingController _addressController = TextEditingController();
   Map<String, String> _formData = {};
   bool updateContato = false;
 
@@ -41,13 +44,18 @@ class _ContatoEditorState extends State<ContatoEditor> {
     super.initState();
   }
 
+  void dispose() {
+    super.dispose();
+    _addressController.dispose();
+  }
+
   _save() {
     if (_formKey.currentState?.validate() ?? false) {
       _formKey.currentState?.save();
       final provider = Provider.of<Contatos>(context, listen: false);
       if (updateContato) {
         provider.update(Contato(
-            widget.contato?.creatorId ?? '',
+            widget.contato?.id ?? '',
             _formData['Name'] ?? '',
             _formData['Email'] ?? '',
             _formData['Address'] ?? '',
@@ -74,12 +82,13 @@ class _ContatoEditorState extends State<ContatoEditor> {
   @override
   Widget build(BuildContext context) {
     final currTheme = Provider.of<ThemeChanger>(context).currTheme;
-    Color? borderColor =
-        currTheme == ThemeType.light ? Colors.black : Colors.purpleAccent[100];
+    Color borderColor = currTheme == ThemeType.light
+        ? Colors.black
+        : Colors.purpleAccent[100] ?? Colors.black;
+
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-            updateContato ? 'Atualizando conta' : 'Criando uma nova conta'),
+        title: Text(updateContato ? 'Atualizando contato' : 'Novo contato'),
         centerTitle: true,
       ),
       body: Form(
@@ -91,160 +100,207 @@ class _ContatoEditorState extends State<ContatoEditor> {
                 const SizedBox(
                   height: 15,
                 ),
-                TextFormField(
-                  initialValue: _formData['Name'],
-                  maxLength: 20,
-                  decoration: InputDecoration(
-                    icon: Icon(Icons.person),
-                    enabledBorder: UnderlineInputBorder(
-                        borderSide:
-                            BorderSide(color: borderColor ?? Colors.black)),
-                    counterStyle: Theme.of(context).textTheme.bodyText1,
-                    labelText: 'Título',
-                    labelStyle: Theme.of(context).textTheme.bodyText2,
-                  ),
-                  keyboardType: TextInputType.name,
-                  onSaved: (value) {
-                    if (value == null) {
-                      _formData['Name'] = '';
-                      return;
-                    }
-                    _formData['Name'] = value.trim();
-                  },
-                  validator: (value) {
-                    if (value == null) return 'O valor não pode ser null';
-                    if (value.isEmpty) {
-                      return 'O \'Nome\' não deveria estar vazio';
-                    } else if (value.length < _minTitleLength) {
-                      return 'O \'Nome\' não deveria ter no mínimo $_minTitleLength caracteres ';
-                    }
-                    return null;
-                  },
-                ),
+                _buildNameTFF(borderColor, context),
                 const SizedBox(
                   height: 15,
                 ),
-                TextFormField(
-                  initialValue: _formData['Email'],
-                  decoration: InputDecoration(
-                      icon: Icon(Icons.email),
-                      enabledBorder: UnderlineInputBorder(
-                          borderSide:
-                              BorderSide(color: borderColor ?? Colors.black)),
-                      labelText: 'Email',
-                      counterStyle: Theme.of(context).textTheme.bodyText1,
-                      labelStyle: Theme.of(context).textTheme.bodyText2),
-                  maxLength: 50,
-                  keyboardType: TextInputType.emailAddress,
-                  onSaved: (value) {
-                    if (value == null) {
-                      _formData['Email'] = '';
-                      return;
-                    }
-                    _formData['Email'] = value.trim();
-                  },
-                  validator: (value) {
-                    if (value == null) return 'o valor não pode ser nulo';
-                    if (value.isEmpty) {
-                      return 'O \'Email\' não deveria ser vazio';
-                    } else if (!_isValidEmail(value))
-                      return 'Este não é um email válido';
-                    return null;
-                  },
-                ),
+                _buildPhoneNumberTFF(borderColor, context),
                 const SizedBox(
                   height: 15,
                 ),
-                TextFormField(
-                  initialValue: _formData['Address'],
-                  decoration: InputDecoration(
-                    icon: Icon(Icons.location_city),
-                    enabledBorder: UnderlineInputBorder(
-                        borderSide:
-                            BorderSide(color: borderColor ?? Colors.black)),
-                    labelText: 'Valor',
-                    labelStyle: Theme.of(context).textTheme.bodyText2,
-                  ),
-                  keyboardType: TextInputType.streetAddress,
-                  onSaved: (value) {
-                    if (value == null) {
-                      _formData['Address'] = '';
-                      return;
-                    }
-                    _formData['Address'] = value.trim();
-                  },
-                  validator: (value) {
-                    if (value == null) return 'o valor não pode ser nulo';
-                    if (value.isEmpty) {
-                      return 'O \'valor\' não deveria ser vazio';
-                    } else if (double.tryParse(value) == null) {
-                      return 'Valor inválido, tente novamente';
-                    }
-                    return null;
-                  },
+                _buildEmailTFF(borderColor, context),
+                const SizedBox(
+                  height: 15,
                 ),
-                TextFormField(
-                  initialValue: _formData['Cep'],
-                  decoration: InputDecoration(
-                    icon: Icon(Icons.add_location_rounded),
-                    enabledBorder: UnderlineInputBorder(
-                        borderSide:
-                            BorderSide(color: borderColor ?? Colors.black)),
-                    labelText: 'Valor',
-                    labelStyle: Theme.of(context).textTheme.bodyText2,
-                  ),
-                  keyboardType: TextInputType.number,
-                  onSaved: (value) {
-                    if (value == null) {
-                      _formData['Cep'] = '';
-                      return;
-                    }
-                    _formData['Cep'] = value.trim();
-                  },
-                  validator: (value) {
-                    if (value == null) return 'o valor não pode ser nulo';
-                    if (value.isEmpty) {
-                      return 'O \'Cep\' não deveria ser vazio';
-                    }
-                    return null;
-                  },
+                _buildCepTFF(context, borderColor),
+                const SizedBox(
+                  height: 15,
                 ),
-                TextFormField(
-                  initialValue: _formData['Phone_number'],
-                  decoration: InputDecoration(
-                    icon: Icon(Icons.add_call),
-                    enabledBorder: UnderlineInputBorder(
-                        borderSide:
-                            BorderSide(color: borderColor ?? Colors.black)),
-                    labelText: 'Valor',
-                    labelStyle: Theme.of(context).textTheme.bodyText2,
-                  ),
-                  keyboardType: TextInputType.phone,
-                  onSaved: (value) {
-                    if (value == null) {
-                      _formData['Phone_number'] = '';
-                      return;
-                    }
-                    _formData['Phone_number'] = value.trim();
-                  },
-                  validator: (value) {
-                    if (value == null) return 'o valor não pode ser nulo';
-                    if (value.isEmpty) {
-                      return 'O \'Cep\' não deveria ser vazio';
-                    }
-                    return null;
-                  },
-                ),
+                _buildAddressTFF(borderColor, context),
                 const SizedBox(
                   height: 15,
                 ),
                 Center(
                   child: ElevatedButton(
-                      onPressed: _save, child: Text('Salvar \'Contato\'')),
+                      onPressed: _save, child: Text('Salvar Contato')),
                 ),
               ],
             ),
           )),
+    );
+  }
+
+  _buildNameTFF(Color borderColor, BuildContext context) {
+    return TextFormField(
+      initialValue: _formData['Name'],
+      maxLength: 20,
+      decoration: InputDecoration(
+        icon: Icon(Icons.person),
+        enabledBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: borderColor),
+            borderRadius: BorderRadius.circular(5.0)),
+        counterStyle: Theme.of(context).textTheme.bodyText1,
+        labelText: 'Nome',
+        labelStyle: Theme.of(context).textTheme.bodyText2,
+      ),
+      keyboardType: TextInputType.name,
+      onSaved: (value) {
+        if (value == null) {
+          _formData['Name'] = '';
+          return;
+        }
+        _formData['Name'] = value.trim();
+      },
+      validator: (value) {
+        if (value == null) return 'O valor não pode ser null';
+        if (value.isEmpty) {
+          return 'O \'Nome\' não deveria estar vazio';
+        } else if (value.length < _minTitleLength) {
+          return 'O \'Nome\' não deveria ter no mínimo $_minTitleLength caracteres ';
+        }
+        return null;
+      },
+    );
+  }
+
+  _buildPhoneNumberTFF(Color borderColor, BuildContext context) {
+    return TextFormField(
+      initialValue: _formData['Phone_number'],
+      decoration: InputDecoration(
+        icon: Icon(Icons.add_call),
+        enabledBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: borderColor),
+            borderRadius: BorderRadius.circular(5.0)),
+        labelText: 'Telefone',
+        labelStyle: Theme.of(context).textTheme.bodyText2,
+      ),
+      keyboardType: TextInputType.phone,
+      onSaved: (value) {
+        if (value == null) {
+          _formData['Phone_number'] = '';
+          return;
+        }
+        _formData['Phone_number'] = value.trim();
+      },
+      validator: (value) {
+        if (value == null) return 'o valor não pode ser nulo';
+        if (value.isEmpty) {
+          return 'O \'Cep\' não deveria ser vazio';
+        }
+        return null;
+      },
+    );
+  }
+
+  _buildEmailTFF(Color borderColor, BuildContext context) {
+    return TextFormField(
+      initialValue: _formData['Email'],
+      decoration: InputDecoration(
+          icon: Icon(Icons.email),
+          enabledBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: borderColor),
+              borderRadius: BorderRadius.circular(5.0)),
+          labelText: 'Email',
+          counterStyle: Theme.of(context).textTheme.bodyText1,
+          labelStyle: Theme.of(context).textTheme.bodyText2),
+      maxLength: 50,
+      keyboardType: TextInputType.emailAddress,
+      onSaved: (value) {
+        if (value == null) {
+          _formData['Email'] = '';
+          return;
+        }
+        _formData['Email'] = value.trim();
+      },
+      validator: (value) {
+        if (value == null) return 'o valor não pode ser nulo';
+        if (value.isEmpty) {
+          return 'O \'Email\' não deveria ser vazio';
+        } else if (!_isValidEmail(value)) return 'Este não é um email válido';
+        return null;
+      },
+    );
+  }
+
+  _buildAddressTFF(Color borderColor, BuildContext context) {
+    return TextFormField(
+      controller: _addressController,
+      decoration: InputDecoration(
+        icon: Icon(Icons.location_city),
+        enabledBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: borderColor),
+            borderRadius: BorderRadius.circular(5.0)),
+        labelText: 'Endereço',
+        labelStyle: Theme.of(context).textTheme.bodyText2,
+      ),
+      keyboardType: TextInputType.streetAddress,
+      onSaved: (value) {
+        if (value == null) {
+          _formData['Address'] = '';
+          return;
+        }
+        _formData['Address'] = value.trim();
+      },
+      validator: (value) {
+        if (value == null) return 'o valor não pode ser nulo';
+        if (value.isEmpty) {
+          return 'O \'valor\' não deveria ser vazio';
+        }
+        return null;
+      },
+    );
+  }
+
+  _buildCepTFF(BuildContext ctx, Color borderColor) {
+    return TextFormField(
+      initialValue: _formData['Cep'],
+      decoration: InputDecoration(
+        icon: Icon(Icons.add_location_rounded),
+        enabledBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: borderColor),
+            borderRadius: BorderRadius.circular(5.0)),
+        labelText: 'CEP',
+        labelStyle: Theme.of(context).textTheme.bodyText2,
+      ),
+      maxLengthEnforcement: MaxLengthEnforcement.enforced,
+      maxLength: 8,
+      keyboardType: TextInputType.number,
+      onSaved: (value) {
+        if (value == null) {
+          _formData['Cep'] = '';
+          return;
+        }
+        _formData['Cep'] = value.trim();
+      },
+      onChanged: (value) async {
+        if (value.length != 8) return;
+        var result;
+        bool error = false;
+
+        result = await readAddressByCep(value).catchError((e) {
+          showDialog(
+            context: ctx,
+            builder: (context) => AlertDialog(
+              title: Text('Atenção!'),
+              content: Text('Este CEP é inválido!'),
+            ),
+          );
+          error = true;
+        });
+
+        if (error) return;
+        setState(() {
+          _addressController.text = result.street;
+          _formData['Address'] = result.street;
+        });
+      },
+      validator: (value) {
+        if (value == null) return 'o valor não pode ser nulo';
+        if (value.isEmpty) {
+          return 'O \'Cep\' não deveria ser vazio';
+        }
+        return null;
+      },
     );
   }
 }

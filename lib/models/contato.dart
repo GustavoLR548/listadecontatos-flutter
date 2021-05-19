@@ -1,22 +1,31 @@
 import 'package:flutter/cupertino.dart';
 
 class Contato with ChangeNotifier {
-  String _creatorId;
-  String _nome;
-  String _email;
-  String _endereco;
-  String _cep;
-  String _telefone;
+  String _id = '';
+  String _nome = '';
+  String _email = '';
+  String _endereco = '';
+  String _cep = '';
+  String _telefone = '';
 
-  Contato(this._creatorId, this._nome, this._email, this._endereco, this._cep,
+  Contato(this._id, this._nome, this._email, this._endereco, this._cep,
       this._telefone);
 
-  String get creatorId {
-    return this._creatorId;
+  Contato.froJson(Map<String, dynamic> json, String id) {
+    this._id = id;
+    this._telefone = json['phone_number'];
+    this._nome = json['name'];
+    this._email = json['email'];
+    this._endereco = json['address'];
+    this._cep = json['cep'];
   }
 
-  set creatorId(String creatorId) {
-    this._creatorId = creatorId;
+  String get id {
+    return this._id;
+  }
+
+  set id(String id) {
+    this._id = id;
   }
 
   String get nome {

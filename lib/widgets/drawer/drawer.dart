@@ -8,8 +8,6 @@ import 'package:provider/provider.dart';
 class AppDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final userData = Provider.of<Auth>(context).currUser;
-
     return Drawer(
         child: ListView(
       padding: EdgeInsets.zero,

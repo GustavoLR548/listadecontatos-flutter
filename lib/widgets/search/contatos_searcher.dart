@@ -30,14 +30,43 @@ class ContatoSearcher extends SearchDelegate<Contato> {
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    return Consumer<Contatos>(
-      builder: (context, contatos, child) => ListView.builder(
-        itemCount: contatos.size,
-        itemBuilder: (context, index) => ListTile(
-          leading: Icon(Icons.portrait),
-          title: Text(contatos.items[index].nome),
-        ),
-      ),
+    return StreamBuilder<List<Contato>>(
+      stream: Provider.of<Contatos>(context).fetchData(),
+      builder: (context, snapshot) =>
+          snapshot.connectionState == ConnectionState.waiting
+              ? Center(
+                  child: CircularProgressIndicator(),
+                )
+              : buildScaffoldBody(context, snapshot.data),
     );
+  }
+
+  buildScaffoldBody(BuildContext context, List<Contato>? contatos) {
+    if (contatos != null)
+      return contatos.length == 0
+          ? Center(
+              child: const Text(
+                'Nenhum contato inserido',
+                style: TextStyle(color: Colors.white),
+              ),
+            )
+          : Padding(
+              padding: const EdgeInsets.only(top: 15),
+              child: ListView.builder(
+                shrinkWrap: true,
+                scrollDirection: Axis.vertical,
+                itemCount: contatos.length,
+                itemBuilder: (context, index) => ListTile(
+                  tileColor: Theme.of(context).primaryColor,
+                  leading: CircleAvatar(
+                    child: FittedBox(
+                      fit: BoxFit.contain,
+                      child: Text(contatos[index].initials),
+                    ),
+                  ),
+                  title: Text(contatos[index].nome),
+                ),
+              ),
+            );
   }
 }
