@@ -21,8 +21,7 @@ class ContatoCard extends StatelessWidget {
       leading: Hero(
         tag: contato.id,
         child: CircleAvatar(
-          backgroundColor: availableColors[
-              contato.nome.codeUnits[0] % availableColors.length],
+          backgroundColor: contato.color,
           child: FittedBox(
             fit: BoxFit.contain,
             child: Text(contato.initials.toUpperCase()),

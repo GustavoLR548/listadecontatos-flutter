@@ -27,49 +27,49 @@ class Homepage extends StatelessWidget {
           ],
         ),
         drawer: AppDrawer(),
-        body: StreamBuilder<List<Contato>>(
-          stream: Provider.of<Contatos>(context).fetchData(),
+        body: FutureBuilder(
+          future: Provider.of<Contatos>(context, listen: false).fetchData(),
           builder: (context, snapshot) =>
               snapshot.connectionState == ConnectionState.waiting
                   ? Center(
                       child: CircularProgressIndicator(),
                     )
-                  : buildScaffoldBody(context, snapshot.data),
+                  : buildScaffoldBody(context),
         ));
   }
 
-  buildScaffoldBody(BuildContext context, List<Contato>? contatos) {
-    if (contatos != null)
-      return contatos.length == 0
-          ? Center(
-              child: const Text(
-                'Nenhum contato inserido',
-                style: TextStyle(color: Colors.white),
-              ),
-            )
-          : Padding(
-              padding: const EdgeInsets.only(top: 15),
-              child: GroupedListView<Contato, String>(
-                elements: contatos,
-                groupBy: (element) => element.nome[0],
-                groupSeparatorBuilder: (groupByValue) => Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 15),
-                  child: Text(
-                    groupByValue.toUpperCase(),
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.headline1,
-                  ),
+  buildScaffoldBody(BuildContext context) {
+    return Consumer<Contatos>(
+        builder: (context, contatos, child) => contatos.size == 0
+            ? Center(
+                child: const Text(
+                  'Nenhum contato inserido',
+                  style: TextStyle(color: Colors.white),
                 ),
-                itemBuilder: (context, element) =>
-                    ContatoCard(Key(element.id), element, () async {
-                  await Navigator.of(context)
-                      .pushNamed(ContatoPage.routeName, arguments: element.id);
-                }),
-                itemComparator: (item1, item2) =>
-                    item1.nome[0].compareTo(item2.nome[0]), // optional
-                useStickyGroupSeparators: true, // optional
-                floatingHeader: true, // optional
-              ),
-            );
+              )
+            : Padding(
+                padding: const EdgeInsets.only(top: 15),
+                child: GroupedListView<Contato, String>(
+                  elements: contatos.items,
+                  groupBy: (element) => element.nome[0],
+                  groupSeparatorBuilder: (groupByValue) => Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 15),
+                    child: Text(
+                      groupByValue.toUpperCase(),
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.headline1,
+                    ),
+                  ),
+                  itemBuilder: (context, element) =>
+                      ContatoCard(Key(element.nome), element, () async {
+                    await Navigator.of(context).pushNamed(ContatoPage.routeName,
+                        arguments: element.id);
+                  }),
+                  itemComparator: (item1, item2) =>
+                      item1.nome[0].compareTo(item2.nome[0]), // optional
+                  useStickyGroupSeparators: true, // optional
+                  floatingHeader: true, // optional
+                ),
+              ));
   }
 }

@@ -48,50 +48,41 @@ class ContatoSearcher extends SearchDelegate<Contato> {
 //ContatoInformation(selectedContato)
   @override
   Widget buildResults(BuildContext context) {
-    return FutureBuilder(
-        future: Provider.of<Contatos>(context).findById(selectedContato.id),
-        builder: (context, AsyncSnapshot<Contato> snapshot) =>
-            snapshot.connectionState == ConnectionState.waiting
-                ? Center(child: CircularProgressIndicator())
-                : ContatoInformation(selectedContato));
+    selectedContato = Provider.of<Contatos>(context, listen: false)
+        .findById(selectedContato.id);
+    return ContatoInformation(selectedContato);
   }
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    return StreamBuilder<List<Contato>>(
-      stream: Provider.of<Contatos>(context).fetchData(),
-      builder: (context, snapshot) =>
-          snapshot.connectionState == ConnectionState.waiting
-              ? Center(
-                  child: CircularProgressIndicator(),
-                )
-              : buildScaffoldBody(context, snapshot.data ?? []),
-    );
-  }
-
-  buildScaffoldBody(BuildContext context, List<Contato> contatos) {
-    if (query.isNotEmpty)
-      contatos =
-          contatos.where((element) => element.nome.startsWith(query)).toList();
-    return contatos.length == 0
-        ? Center(
-            child: const Text(
-              'Nenhum contato inserido',
-              style: TextStyle(color: Colors.white),
-            ),
-          )
-        : Padding(
-            padding: const EdgeInsets.only(top: 15),
-            child: ListView.builder(
-                shrinkWrap: true,
-                scrollDirection: Axis.vertical,
-                itemCount: contatos.length,
-                itemBuilder: (context, index) =>
-                    ContatoCard(Key(contatos[index].id), contatos[index], () {
-                      this.cp = CurrentPage.results;
-                      selectedContato = contatos[index];
-                      showResults(context);
-                    })),
-          );
+    return Consumer<Contatos>(builder: (context, contatos, child) {
+      List<Contato> c;
+      if (query.isNotEmpty)
+        c = contatos.items
+            .where((element) => element.nome.startsWith(query))
+            .toList();
+      else
+        c = contatos.items;
+      return contatos.size == 0
+          ? Center(
+              child: const Text(
+                'Nenhum contato inserido',
+                style: TextStyle(color: Colors.white),
+              ),
+            )
+          : Padding(
+              padding: const EdgeInsets.only(top: 15),
+              child: ListView.builder(
+                  shrinkWrap: true,
+                  scrollDirection: Axis.vertical,
+                  itemCount: c.length,
+                  itemBuilder: (context, index) =>
+                      ContatoCard(Key(c[index].id), c[index], () {
+                        this.cp = CurrentPage.results;
+                        selectedContato = c[index];
+                        showResults(context);
+                      })),
+            );
+    });
   }
 }

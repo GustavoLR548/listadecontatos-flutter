@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:listadecontatos/provider/auth.dart';
+import 'package:listadecontatos/provider/themes.dart';
 import 'package:listadecontatos/screens/Configuration.dart';
 import 'package:listadecontatos/screens/ContatoEditor.dart';
 import 'package:listadecontatos/widgets/drawer/drawer_item.dart';
@@ -8,6 +9,11 @@ import 'package:provider/provider.dart';
 class AppDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final currTheme =
+        Provider.of<ThemeChanger>(context, listen: false).currTheme;
+
+    final iconColor =
+        currTheme == ThemeType.light ? Colors.black : Colors.white;
     return Drawer(
         child: ListView(
       padding: EdgeInsets.zero,
@@ -18,6 +24,7 @@ class AppDrawer extends StatelessWidget {
               children: [
                 Icon(
                   Icons.portrait_rounded,
+                  color: iconColor,
                   size: 75,
                 ),
                 Text(
@@ -32,7 +39,10 @@ class AppDrawer extends StatelessWidget {
             'Configurações',
             style: Theme.of(context).textTheme.headline1,
           ),
-          icon: Icon(Icons.settings),
+          icon: Icon(
+            Icons.settings,
+            color: iconColor,
+          ),
           onTap: () => Navigator.of(context).pushNamed(Configuration.routeName),
         ),
         Divider(),
@@ -41,7 +51,10 @@ class AppDrawer extends StatelessWidget {
               'Adicionar contato',
               style: Theme.of(context).textTheme.headline1,
             ),
-            icon: Icon(Icons.person_add),
+            icon: Icon(
+              Icons.person_add,
+              color: iconColor,
+            ),
             onTap: () => Navigator.of(context).push(MaterialPageRoute<void>(
                 builder: (context) => ContatoEditor()))),
         Divider(),

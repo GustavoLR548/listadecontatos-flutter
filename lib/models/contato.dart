@@ -1,6 +1,14 @@
 import 'package:flutter/material.dart';
 
-const availableColors = [Colors.red, Colors.black, Colors.purple, Colors.blue];
+const availableColors = [
+  Colors.red,
+  Colors.purple,
+  Colors.blue,
+  Colors.amber,
+  Colors.deepOrange,
+  Colors.lime,
+  Colors.indigo
+];
 
 class Contato with ChangeNotifier {
   String _id = '';
@@ -13,17 +21,9 @@ class Contato with ChangeNotifier {
   Contato(this._id, this._nome, this._email, this._endereco, this._cep,
       this._telefone);
 
-  Contato.froJson(Map<String, dynamic> json, String id) {
-    this._id = id;
-    this._telefone = json['phone_number'];
-    this._nome = json['name'];
-    this._email = json['email'];
-    this._endereco = json['address'];
-    this._cep = json['cep'];
-  }
-
-  Color get color =>
-      availableColors[this.nome.codeUnits[0] % availableColors.length];
+  Color get color => availableColors[
+      (this.nome.codeUnits[0] + this.nome.codeUnits[this.nome.length - 1]) %
+          availableColors.length];
 
   String get id => this._id;
 

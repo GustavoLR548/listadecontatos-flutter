@@ -9,44 +9,43 @@ import 'package:flutter/services.dart';
 class Auth with ChangeNotifier {
   final _auth = FirebaseAuth.instance;
 
-  String _currUserUsername = 'null';
-  String _currUserEmail = 'n/a';
-  String _currUserId = '-1';
-  String _currUserImagePath = 'no path';
+  String _username = 'null';
+  String _email = 'n/a';
+  String _id = '-1';
+  String _imagePath = 'no path';
 
   bool _logado = false;
 
-  String get currUserId {
-    return _currUserId;
+  String get id {
+    return _id;
   }
 
   bool get isLogado {
     return _logado;
   }
 
-  void _setUser(String currUserUsername, String currUserEmail,
-      String currUserId, String currUserImagePath) {
-    this._currUserUsername = currUserUsername;
-    this._currUserEmail = currUserEmail;
-    this._currUserId = currUserId;
-    this._currUserImagePath = currUserImagePath;
+  void _setUser(String username, String email, String id, String imagePath) {
+    this._username = username;
+    this._email = email;
+    this._id = id;
+    this._imagePath = imagePath;
     this._logado = true;
     notifyListeners();
   }
 
   Map<String, dynamic> get currUser {
     return {
-      'id': _currUserId,
-      'username': _currUserUsername,
-      'email': _currUserEmail,
-      'image_url': _currUserImagePath,
+      'id': _id,
+      'username': _username,
+      'email': _email,
+      'image_url': _imagePath,
     };
   }
 
-  Future<void> signIn(String currUserEmail, String password) async {
+  Future<void> signIn(String email, String password) async {
     try {
       UserCredential authResult = await _auth.signInWithEmailAndPassword(
-          email: currUserEmail, password: password);
+          email: email, password: password);
 
       final user = _auth.currentUser;
       if (user == null) return;
@@ -54,7 +53,7 @@ class Auth with ChangeNotifier {
       String userId = authResult.user?.uid ?? '-1';
       if (userId == '-1') return;
 
-      final userData = await _getUserData(userId);
+      final userData = await _fetchUserData(userId);
       var newUser = userData.data() as Map<String, dynamic>;
 
       _setUser(
@@ -117,7 +116,7 @@ class Auth with ChangeNotifier {
     if (user == null) return false;
 
     if (!this._logado) {
-      final userData = await _getUserData(user.uid);
+      final userData = await _fetchUserData(user.uid);
       if (userData.data() == null) return false;
 
       var newUser = userData.data() as Map<String, dynamic>;
@@ -128,7 +127,7 @@ class Auth with ChangeNotifier {
     return true;
   }
 
-  Future<DocumentSnapshot> _getUserData(String userId) async {
+  Future<DocumentSnapshot> _fetchUserData(String userId) async {
     return await FirebaseFirestore.instance
         .collection('users')
         .doc(userId)
@@ -142,7 +141,6 @@ class Auth with ChangeNotifier {
     _auth.signOut();
 
     this._logado = false;
-    print('deslogado! ' + this._logado.toString());
     notifyListeners();
   }
 }

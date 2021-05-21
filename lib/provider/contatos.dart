@@ -8,38 +8,44 @@ class Contatos with ChangeNotifier {
   String subCollect = 'allContacts';
   String _userId = '-1';
 
+  List<Contato> _items = [];
+
+  List<Contato> get items => [..._items];
+
+  int get size => _items.length;
+
   Contatos();
 
   Contatos.loggedIn(this._userId);
 
-  Stream<List<Contato>> fetchData() {
-    return _firestore
+  Future<void> fetchData() async {
+    final data = await _firestore
         .collection(mainCollec)
         .doc(_userId)
         .collection(subCollect)
-        .snapshots()
-        .map((snapshots) => snapshots.docs
-            .map(
-              (doc) => Contato.froJson(doc.data(), doc.id),
-            )
-            .toList());
-  }
-
-  Future<Contato> findById(String id) async {
-    final doc = await _firestore
-        .collection(mainCollec)
-        .doc(_userId)
-        .collection(subCollect)
-        .doc(id)
         .get();
 
-    final results = doc.data() ?? {};
+    final documents = data.docs;
 
-    Contato result = Contato(doc.id, results['name'], results['email'],
-        results['address'], results['cep'], results['phone_number']);
+    if (documents.length == 0) return;
 
-    return result;
+    _items = documents.map((element) {
+      Map<String, dynamic> contatoData = element.data();
+      return Contato(
+        element.id,
+        contatoData['name'],
+        contatoData['email'],
+        contatoData['address'],
+        contatoData['cep'],
+        contatoData['phone_number'],
+      );
+    }).toList();
+
+    notifyListeners();
   }
+
+  Contato findById(String id) =>
+      _items.firstWhere((element) => element.id == id);
 
   Future<void> add(String name, String email, String address, String cep,
       String phoneNumber) async {
@@ -56,20 +62,29 @@ class Contatos with ChangeNotifier {
       'address': address,
       'cep': cep
     });
+
+    _items.add(Contato(contatoID, name, email, address, cep, phoneNumber));
     notifyListeners();
   }
 
   Future<void> remove(String id) async {
-    return _firestore
+    await _firestore
         .collection(mainCollec)
         .doc(_userId)
         .collection(subCollect)
         .doc(id)
         .delete();
+    _items.removeWhere((element) => element.id == id);
+    notifyListeners();
   }
 
   Future<void> update(Contato c) async {
-    notifyListeners();
+    int index = _items.indexWhere((element) => element.id == c.id);
+
+    if (index == -1) return;
+
+    _items[index] = c;
+
     await _firestore
         .collection(this.mainCollec)
         .doc(this._userId)
@@ -82,5 +97,6 @@ class Contatos with ChangeNotifier {
       'address': c.endereco,
       'cep': c.cep
     });
+    notifyListeners();
   }
 }
