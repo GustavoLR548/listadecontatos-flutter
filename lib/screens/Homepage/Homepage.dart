@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:listadecontatos/models/contato.dart';
 import 'package:listadecontatos/provider/contatos.dart';
-import 'package:listadecontatos/screens/contato_page.dart';
+import 'package:listadecontatos/screens/ContatoPage.dart';
+import 'package:listadecontatos/widgets/contato/contato_card.dart';
 import 'package:listadecontatos/widgets/drawer/drawer.dart';
 import 'package:listadecontatos/widgets/search/contatos_searcher.dart';
 import 'package:provider/provider.dart';
@@ -54,31 +55,16 @@ class Homepage extends StatelessWidget {
                 groupSeparatorBuilder: (groupByValue) => Padding(
                   padding: const EdgeInsets.symmetric(vertical: 15),
                   child: Text(
-                    groupByValue,
+                    groupByValue.toUpperCase(),
                     textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.headline1,
                   ),
                 ),
-                itemBuilder: (context, element) => ListTile(
-                  onTap: () async {
-                    final result = await Navigator.of(context)
-                        .pushNamed(ContaPage.routeName, arguments: element);
-
-                    await Future.delayed(Duration(milliseconds: 600));
-                    if (result == null) return;
-                    if (result == 'delete')
-                      Provider.of<Contatos>(context, listen: false)
-                          .remove(element.id);
-                  },
-                  tileColor: Theme.of(context).primaryColor,
-                  leading: CircleAvatar(
-                    child: FittedBox(
-                      fit: BoxFit.contain,
-                      child: Text(element.initials),
-                    ),
-                  ),
-                  title: Text(element.nome),
-                ),
+                itemBuilder: (context, element) =>
+                    ContatoCard(Key(element.id), element, () async {
+                  await Navigator.of(context)
+                      .pushNamed(ContatoPage.routeName, arguments: element.id);
+                }),
                 itemComparator: (item1, item2) =>
                     item1.nome[0].compareTo(item2.nome[0]), // optional
                 useStickyGroupSeparators: true, // optional

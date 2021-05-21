@@ -4,7 +4,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Contatos with ChangeNotifier {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  String collectionName = 'contacts';
+  String mainCollec = 'users';
+  String subCollect = 'allContacts';
   String _userId = '-1';
 
   Contatos();
@@ -13,9 +14,9 @@ class Contatos with ChangeNotifier {
 
   Stream<List<Contato>> fetchData() {
     return _firestore
-        .collection(collectionName)
+        .collection(mainCollec)
         .doc(_userId)
-        .collection('allContacts')
+        .collection(subCollect)
         .snapshots()
         .map((snapshots) => snapshots.docs
             .map(
@@ -24,22 +25,29 @@ class Contatos with ChangeNotifier {
             .toList());
   }
 
-  Future<DocumentSnapshot<Map<String, dynamic>>> findById(String id) async {
-    return await _firestore
-        .collection(collectionName)
+  Future<Contato> findById(String id) async {
+    final doc = await _firestore
+        .collection(mainCollec)
         .doc(_userId)
-        .collection('allContacts')
+        .collection(subCollect)
         .doc(id)
         .get();
+
+    final results = doc.data() ?? {};
+
+    Contato result = Contato(doc.id, results['name'], results['email'],
+        results['address'], results['cep'], results['phone_number']);
+
+    return result;
   }
 
   Future<void> add(String name, String email, String address, String cep,
       String phoneNumber) async {
     final contatoID = DateTime.now().toIso8601String();
     await _firestore
-        .collection(this.collectionName)
+        .collection(this.mainCollec)
         .doc(this._userId)
-        .collection('allContacts')
+        .collection(subCollect)
         .doc(contatoID)
         .set({
       'phone_number': phoneNumber,
@@ -53,9 +61,9 @@ class Contatos with ChangeNotifier {
 
   Future<void> remove(String id) async {
     return _firestore
-        .collection(collectionName)
+        .collection(mainCollec)
         .doc(_userId)
-        .collection('allContacts')
+        .collection(subCollect)
         .doc(id)
         .delete();
   }
@@ -63,9 +71,9 @@ class Contatos with ChangeNotifier {
   Future<void> update(Contato c) async {
     notifyListeners();
     await _firestore
-        .collection(this.collectionName)
+        .collection(this.mainCollec)
         .doc(this._userId)
-        .collection('allContacts')
+        .collection(subCollect)
         .doc(c.id)
         .update({
       'phone_number': c.telefone,

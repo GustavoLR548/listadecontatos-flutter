@@ -1,11 +1,11 @@
 import 'package:listadecontatos/provider/auth.dart';
 import 'package:listadecontatos/provider/contatos.dart';
 import 'package:listadecontatos/provider/themes.dart';
+import 'package:listadecontatos/screens/ContatoPage.dart';
 import 'package:listadecontatos/screens/Homepage/Homepage.dart';
 import 'package:listadecontatos/screens/LoginAndSignup.dart';
 import 'package:listadecontatos/screens/Configuration.dart';
 import 'package:listadecontatos/screens/Splashscreen.dart';
-import 'package:listadecontatos/screens/contato_page.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -52,7 +52,7 @@ class MyMaterialApp extends StatelessWidget {
                           : AuthScreen())),
       routes: {
         Homepage.routeName: (ctx) => Homepage(),
-        ContaPage.routeName: (ctx) => ContaPage(),
+        ContatoPage.routeName: (ctx) => ContatoPage(),
         Configuration.routeName: (ctx) => Configuration(),
       },
     );

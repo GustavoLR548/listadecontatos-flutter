@@ -32,11 +32,12 @@ class _ContatoEditorState extends State<ContatoEditor> {
         'Phone_number': '',
       };
     } else {
+      _addressController.text = widget.contato?.endereco ?? '';
       updateContato = true;
       _formData = {
         'Name': widget.contato?.nome ?? '',
         'Email': widget.contato?.email ?? '',
-        'Address': widget.contato?.endereco ?? '',
+        'Address': _addressController.text,
         'Cep': widget.contato?.cep ?? '',
         'Phone_number': widget.contato?.telefone ?? '',
       };
@@ -166,8 +167,11 @@ class _ContatoEditorState extends State<ContatoEditor> {
   _buildPhoneNumberTFF(Color borderColor, BuildContext context) {
     return TextFormField(
       initialValue: _formData['Phone_number'],
+      inputFormatters: <TextInputFormatter>[
+        FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+      ],
       decoration: InputDecoration(
-        icon: Icon(Icons.add_call),
+        icon: Icon(Icons.phone_iphone),
         enabledBorder: OutlineInputBorder(
             borderSide: BorderSide(color: borderColor),
             borderRadius: BorderRadius.circular(5.0)),

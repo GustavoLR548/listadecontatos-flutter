@@ -19,7 +19,7 @@ class ThemeChanger with ChangeNotifier {
     _lightThemeData = ThemeData(
       primarySwatch: Colors.grey,
       canvasColor: Colors.blueGrey,
-      accentColor: Colors.indigo,
+      accentColor: Colors.grey.shade400,
       accentColorBrightness: Brightness.dark,
       fontFamily: 'Righteous-Regular',
       textTheme: ThemeData.light().textTheme.copyWith(
@@ -57,7 +57,7 @@ class ThemeChanger with ChangeNotifier {
     _darkThemeData = ThemeData(
       primarySwatch: Colors.indigo,
       canvasColor: Color(0xFF00183f),
-      accentColor: Colors.deepPurpleAccent,
+      accentColor: Colors.indigo.shade400,
       accentColorBrightness: Brightness.dark,
       fontFamily: 'Righteous-Regular',
       textTheme: ThemeData.dark().textTheme.copyWith(
@@ -88,6 +88,7 @@ class ThemeChanger with ChangeNotifier {
                 ..style = PaintingStyle.stroke
                 ..strokeWidth = 1
                 ..color = Colors.black),
+          headline6: TextStyle(color: Colors.black),
           bodyText1: TextStyle(
               fontSize: 12, fontWeight: FontWeight.normal, color: Colors.white),
           bodyText2: TextStyle(
