@@ -342,7 +342,7 @@ packages:
       name: via_cep_flutter
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.1.2"
+    version: "0.2.2"
   xml:
     dependency: transitive
     description:

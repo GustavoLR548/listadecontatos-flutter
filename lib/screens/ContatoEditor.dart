@@ -229,6 +229,7 @@ class _ContatoEditorState extends State<ContatoEditor> {
   _buildAddressTFF(Color borderColor, BuildContext context) {
     return TextFormField(
       controller: _addressController,
+      maxLines: 3,
       decoration: InputDecoration(
         icon: Icon(Icons.location_city),
         enabledBorder: OutlineInputBorder(
@@ -278,10 +279,10 @@ class _ContatoEditorState extends State<ContatoEditor> {
       },
       onChanged: (value) async {
         if (value.length != 8) return;
-        var result;
-        bool error = false;
 
-        result = await readAddressByCep(value).catchError((e) {
+        final result = await readAddressByCep(value);
+
+        if (result.isEmpty) {
           showDialog(
             context: ctx,
             builder: (context) => AlertDialog(
@@ -289,13 +290,13 @@ class _ContatoEditorState extends State<ContatoEditor> {
               content: Text('Este CEP é inválido!'),
             ),
           );
-          error = true;
-        });
+          return;
+        }
 
-        if (error) return;
         setState(() {
-          _addressController.text = result.street;
-          _formData['Address'] = result.street;
+          _addressController.text =
+              result['street'] + ', ' + result['city'] + ', ' + result['state'];
+          _formData['Address'] = _addressController.text;
         });
       },
       validator: (value) {
