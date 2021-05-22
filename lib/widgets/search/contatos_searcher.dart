@@ -12,7 +12,7 @@ class ContatoSearcher extends SearchDelegate<Contato> {
   @override
   String get searchFieldLabel => 'Pesquisar';
 
-  late Contato selectedContato;
+  Contato? selectedContato;
   CurrentPage cp = CurrentPage.suggestions;
 
   @override
@@ -34,6 +34,7 @@ class ContatoSearcher extends SearchDelegate<Contato> {
         onPressed: () {
           if (cp == CurrentPage.results) {
             cp = CurrentPage.suggestions;
+            selectedContato = null;
             showSuggestions(context);
           } else {
             Navigator.of(context).pop();
@@ -48,8 +49,14 @@ class ContatoSearcher extends SearchDelegate<Contato> {
 //ContatoInformation(selectedContato)
   @override
   Widget buildResults(BuildContext context) {
+    if (selectedContato == null)
+      return Center(
+        child: Text('Nenhum resultado encontrado'),
+      );
+    this.cp = CurrentPage.results;
     selectedContato = Provider.of<Contatos>(context, listen: false)
-        .findById(selectedContato.id);
+        .findById(selectedContato?.id ?? '');
+
     return ContatoInformation(selectedContato);
   }
 
@@ -63,6 +70,8 @@ class ContatoSearcher extends SearchDelegate<Contato> {
             .toList();
       else
         c = contatos.items;
+
+      if (c.length > 0) selectedContato = c[0];
       return contatos.size == 0
           ? Center(
               child: const Text(
@@ -78,7 +87,6 @@ class ContatoSearcher extends SearchDelegate<Contato> {
                   itemCount: c.length,
                   itemBuilder: (context, index) =>
                       ContatoCard(Key(c[index].id), c[index], () {
-                        this.cp = CurrentPage.results;
                         selectedContato = c[index];
                         showResults(context);
                       })),

@@ -98,29 +98,17 @@ class _ContatoEditorState extends State<ContatoEditor> {
             margin: const EdgeInsets.symmetric(horizontal: 25, vertical: 5),
             child: ListView(
               children: [
-                const SizedBox(
-                  height: 15,
-                ),
+                _mySizedBox(),
                 _buildNameTFF(borderColor, context),
-                const SizedBox(
-                  height: 15,
-                ),
+                _mySizedBox(),
                 _buildPhoneNumberTFF(borderColor, context),
-                const SizedBox(
-                  height: 15,
-                ),
+                _mySizedBox(),
                 _buildEmailTFF(borderColor, context),
-                const SizedBox(
-                  height: 15,
-                ),
+                _mySizedBox(),
                 _buildCepTFF(context, borderColor),
-                const SizedBox(
-                  height: 15,
-                ),
+                _mySizedBox(),
                 _buildAddressTFF(borderColor, context),
-                const SizedBox(
-                  height: 15,
-                ),
+                _mySizedBox(),
                 Center(
                   child: ElevatedButton(
                       onPressed: _save, child: Text('Salvar Contato')),
@@ -128,6 +116,12 @@ class _ContatoEditorState extends State<ContatoEditor> {
               ],
             ),
           )),
+    );
+  }
+
+  _mySizedBox() {
+    return const SizedBox(
+      height: 20,
     );
   }
 
@@ -171,7 +165,7 @@ class _ContatoEditorState extends State<ContatoEditor> {
         FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
       ],
       decoration: InputDecoration(
-        icon: Icon(Icons.phone_iphone),
+        icon: Icon(Icons.phone),
         enabledBorder: OutlineInputBorder(
             borderSide: BorderSide(color: borderColor),
             borderRadius: BorderRadius.circular(5.0)),

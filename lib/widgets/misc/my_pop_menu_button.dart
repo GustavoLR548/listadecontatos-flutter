@@ -5,7 +5,7 @@ import 'package:listadecontatos/screens/ContatoEditor.dart';
 import 'package:provider/provider.dart';
 
 class MyPopMenuButton extends StatelessWidget {
-  final Contato contato;
+  final Contato? contato;
   MyPopMenuButton(this.contato);
   @override
   Widget build(BuildContext context) {
@@ -18,7 +18,7 @@ class MyPopMenuButton extends StatelessWidget {
           ));
         } else if (value == 'delete') {
           await Provider.of<Contatos>(context, listen: false)
-              .remove(contato.id);
+              .remove(contato?.id ?? '');
           Navigator.of(context).pop();
         }
       },

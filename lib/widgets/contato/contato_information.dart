@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:listadecontatos/models/contato.dart';
 
 class ContatoInformation extends StatelessWidget {
-  final Contato selectedContato;
+  final Contato? selectedContato;
   const ContatoInformation(this.selectedContato);
   @override
   Widget build(BuildContext context) {
@@ -11,14 +11,14 @@ class ContatoInformation extends StatelessWidget {
       child: Column(
         children: [
           Hero(
-            tag: selectedContato.id,
+            tag: selectedContato?.id ?? '',
             child: CircleAvatar(
-                backgroundColor: selectedContato.color,
+                backgroundColor: selectedContato?.color ?? Colors.black,
                 radius: 50,
                 child: FittedBox(
                   fit: BoxFit.cover,
                   child: Text(
-                    selectedContato.initials.toUpperCase(),
+                    selectedContato?.initials.toUpperCase() ?? '',
                     style: TextStyle(fontSize: 36),
                   ),
                 )),
@@ -26,7 +26,7 @@ class ContatoInformation extends StatelessWidget {
           const SizedBox(
             height: 10,
           ),
-          Text(selectedContato.telefone,
+          Text(selectedContato?.telefone ?? '',
               style: Theme.of(context).textTheme.headline1),
           const SizedBox(
             height: 10,
@@ -35,7 +35,7 @@ class ContatoInformation extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 10),
             width: double.infinity,
             child: Text(
-              selectedContato.email,
+              selectedContato?.email ?? '',
               textAlign: TextAlign.center,
               softWrap: true,
             ),
@@ -44,7 +44,7 @@ class ContatoInformation extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 10),
             width: double.infinity,
             child: Text(
-              selectedContato.cep,
+              selectedContato?.cep ?? '',
               textAlign: TextAlign.center,
               softWrap: true,
             ),
