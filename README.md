@@ -1,17 +1,7 @@
-# listadecontatos
+# Lista de contatos em flutter
 
-A new Flutter project.
-
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
-# Lista de Contatos em Flutter
+## Objetivos
+ - [x] **A primeira funcionalidade** deverá ser o login, e não esquecer de incluir o cadastro no primeiro acesso.
+ - [x] **A segunda funcionalidade** deve permitir o cadastro de um novo contato informando: nome, e-mail, endereço, cep e telefone. Além disso, deverá incluir o botão para salvar.
+ - [x] **Na terceira funcionalidade**, o aplicativo deve fornecer uma lista de todos os usuários cadastrados e um botão para atualizar a lista após a inserção de um novo usuário.
+ - [x] **Na quarta funcionalidade**, o aplicativo deve permitir a edição de um usuário cadastrado. Nesta tela, deve haver um campo para pesquisar o usuário pelo seu “id” (que deve ser gerado automaticamente no cadastro do usuário) ou então pelo nome, e exibe os campos para serem editados (pelo botão atualizar) ou excluídos (pelo botão deletar).
