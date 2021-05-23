@@ -133,9 +133,6 @@ class _AuthFormState extends State<AuthForm> {
                         return 'O valor inserido não pode ser nulo';
                       result = value;
 
-                      if (!_isValidEmail(result))
-                        return 'Este não é um email válido';
-
                       if (result.isEmpty || result.length < 4)
                         return 'O usuário precisa ter no mínimo 4 caractéres';
                       return null;

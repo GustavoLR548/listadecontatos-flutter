@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:listadecontatos/models/contato.dart';
 
-const availableColors = [Colors.red, Colors.black, Colors.purple, Colors.blue];
+const availableColors = const [
+  Colors.red,
+  Colors.black,
+  Colors.purple,
+  Colors.blue
+];
 
 class ContatoCard extends StatelessWidget {
   final Contato contato;

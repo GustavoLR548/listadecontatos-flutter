@@ -8,6 +8,8 @@ import 'package:flutter/services.dart';
 
 class Auth with ChangeNotifier {
   final _auth = FirebaseAuth.instance;
+  final _firestore = FirebaseFirestore.instance;
+  final collectioName = 'users';
 
   String _username = 'null';
   String _email = 'n/a';
@@ -16,13 +18,9 @@ class Auth with ChangeNotifier {
 
   bool _logado = false;
 
-  String get id {
-    return _id;
-  }
+  String get id => _id;
 
-  bool get isLogado {
-    return _logado;
-  }
+  bool get isLogado => _logado;
 
   void _setUser(String username, String email, String id, String imagePath) {
     this._username = username;
@@ -33,14 +31,12 @@ class Auth with ChangeNotifier {
     notifyListeners();
   }
 
-  Map<String, dynamic> get currUser {
-    return {
-      'id': _id,
-      'username': _username,
-      'email': _email,
-      'image_url': _imagePath,
-    };
-  }
+  Map<String, dynamic> get currUser => {
+        'id': _id,
+        'username': _username,
+        'email': _email,
+        'image_url': _imagePath,
+      };
 
   Future<void> signIn(String email, String password) async {
     try {
@@ -87,7 +83,7 @@ class Auth with ChangeNotifier {
 
       final url = await ref.getDownloadURL();
 
-      await FirebaseFirestore.instance.collection('users').doc(userId).set({
+      await _firestore.collection(collectioName).doc(userId).set({
         'username': username,
         'email': email,
         'image_url': url,
@@ -127,16 +123,11 @@ class Auth with ChangeNotifier {
     return true;
   }
 
-  Future<DocumentSnapshot> _fetchUserData(String userId) async {
-    return await FirebaseFirestore.instance
-        .collection('users')
-        .doc(userId)
-        .get();
-  }
+  Future<DocumentSnapshot> _fetchUserData(String userId) async =>
+      await _firestore.collection(collectioName).doc(userId).get();
 
   void logout() {
-    String empty = '';
-    _setUser(empty, empty, empty, empty);
+    _setUser('', '', '', '');
 
     _auth.signOut();
 

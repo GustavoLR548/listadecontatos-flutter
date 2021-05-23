@@ -51,7 +51,10 @@ class ContatoSearcher extends SearchDelegate<Contato> {
   Widget buildResults(BuildContext context) {
     if (selectedContato == null)
       return Center(
-        child: Text('Nenhum resultado encontrado'),
+        child: Text(
+          'Nenhum resultado encontrado',
+          style: Theme.of(context).textTheme.headline1,
+        ),
       );
     this.cp = CurrentPage.results;
     selectedContato = Provider.of<Contatos>(context, listen: false)
@@ -66,12 +69,13 @@ class ContatoSearcher extends SearchDelegate<Contato> {
       List<Contato> c;
       if (query.isNotEmpty)
         c = contatos.items
-            .where((element) => element.nome.startsWith(query))
+            .where((element) =>
+                element.nome.toUpperCase().startsWith(query.toUpperCase()))
             .toList();
       else
         c = contatos.items;
 
-      if (c.length > 0) selectedContato = c[0];
+      if (c.length > 0 && query.isNotEmpty) selectedContato = c[0];
       return contatos.size == 0
           ? Center(
               child: const Text(
