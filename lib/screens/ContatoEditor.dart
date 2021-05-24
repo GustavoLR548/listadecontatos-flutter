@@ -2,11 +2,10 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:listadecontatos/models/contato.dart';
 import 'package:listadecontatos/provider/contatos.dart';
 import 'package:listadecontatos/provider/themes.dart';
-import 'package:listadecontatos/widgets/misc/pick_user_image.dart';
+import 'package:listadecontatos/widgets/imagePicker/pick_user_image.dart';
 import 'package:provider/provider.dart';
 import 'package:via_cep_flutter/via_cep_flutter.dart';
 
@@ -22,7 +21,6 @@ class _ContatoEditorState extends State<ContatoEditor> {
   final GlobalKey<FormState> _formKey = GlobalKey();
   final TextEditingController _addressController = TextEditingController();
   Map<String, String> _formData = {};
-  File? _userImageFile;
   bool updateContato = false;
 
   final int _minTitleLength = 3;
@@ -40,15 +38,15 @@ class _ContatoEditorState extends State<ContatoEditor> {
       _addressController.text = widget.contato?.endereco ?? '';
 
       if (!(widget.contato?.pathExists ?? false))
-        _userImageFile = File(widget.contato?.imageFile ?? '');
+        _formData['Image_path'] = widget.contato?.imageFile ?? '';
       updateContato = true;
-      _formData = {
+      _formData.addAll({
         'Name': widget.contato?.nome ?? '',
         'Email': widget.contato?.email ?? '',
         'Address': _addressController.text,
         'Cep': widget.contato?.cep ?? '',
         'Phone_number': widget.contato?.telefone ?? '',
-      };
+      });
     }
     super.initState();
   }
@@ -58,8 +56,8 @@ class _ContatoEditorState extends State<ContatoEditor> {
     _addressController.dispose();
   }
 
-  void _storeUserImageFile(File image) {
-    _userImageFile = image;
+  void _storeUserImageFile(String image) {
+    _formData['Image_path'] = image;
   }
 
   _save() {
@@ -76,7 +74,7 @@ class _ContatoEditorState extends State<ContatoEditor> {
                 _formData['Cep'] ?? '',
                 _formData['Phone_number'] ?? '',
                 widget.contato?.imageFile ?? ''),
-            _userImageFile ?? File(''));
+            File(_formData['Image_path'] ?? ''));
       } else {
         provider.add(
             _formData['Name'] ?? '',
@@ -84,7 +82,7 @@ class _ContatoEditorState extends State<ContatoEditor> {
             _formData['Address'] ?? '',
             _formData['Cep'] ?? '',
             _formData['Phone_number'] ?? '',
-            _userImageFile ?? File(''));
+            File(_formData['Image_path'] ?? ''));
       }
       Navigator.of(context).pop();
     }
@@ -117,8 +115,7 @@ class _ContatoEditorState extends State<ContatoEditor> {
                 _mySizedBox(),
                 PickUserImage(
                   _storeUserImageFile,
-                  imageSource: ImageSource.gallery,
-                  initialValue: _userImageFile,
+                  initialValue: _formData['Image_path'],
                 ),
                 _mySizedBox(),
                 _buildNameTFF(borderColor, context),

@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:listadecontatos/provider/themes.dart';
-import 'package:listadecontatos/widgets/misc/pick_user_image.dart';
+import 'package:listadecontatos/widgets/imagePicker/pick_user_image.dart';
 import 'package:provider/provider.dart';
 
 class AuthForm extends StatefulWidget {
@@ -27,12 +27,12 @@ class _AuthFormState extends State<AuthForm> {
 
   final placeholder = File('assets/images/icon.jpg');
 
-  File? _userImageFile;
+  String? _userImageFile;
   var _isLogin = true;
 
   //Functions
 
-  void _storeUserImageFile(File image) {
+  void _storeUserImageFile(String image) {
     _userImageFile = image;
   }
 
@@ -64,7 +64,7 @@ class _AuthFormState extends State<AuthForm> {
         _formValues['password']?.trim() ?? '',
         _formValues['username']?.trim() ?? '',
         _isLogin,
-        _userImageFile ?? placeholder,
+        File(_userImageFile ?? ''),
         ctx);
   }
 
