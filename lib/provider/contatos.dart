@@ -42,7 +42,8 @@ class Contatos with ChangeNotifier {
           contatoData['address'],
           contatoData['cep'],
           contatoData['phone_number'],
-          contatoData['image_url']);
+          contatoData['image_url'],
+          contatoData['birthday']);
     }).toList();
 
     notifyListeners();
@@ -52,7 +53,7 @@ class Contatos with ChangeNotifier {
       _items.firstWhere((element) => element.id == id);
 
   Future<void> add(String name, String email, String address, String cep,
-      String phoneNumber, File image) async {
+      String phoneNumber, String aniversario, File image) async {
     String url = 'N/A';
     final contatoID = DateTime.now().toIso8601String();
     if (image.existsSync()) {
@@ -66,21 +67,17 @@ class Contatos with ChangeNotifier {
       url = await ref.getDownloadURL();
     }
 
+    final newContato = Contato(
+        contatoID, name, email, address, cep, phoneNumber, url, aniversario);
+
     await _firestore
         .collection(this.mainCollec)
         .doc(this._userId)
         .collection(subCollect)
         .doc(contatoID)
-        .set({
-      'phone_number': phoneNumber,
-      'name': name,
-      'email': email,
-      'address': address,
-      'cep': cep,
-      'image_url': url
-    });
+        .set(newContato.toMap);
 
-    _items.add(Contato(contatoID, name, email, address, cep, phoneNumber, url));
+    _items.add(newContato);
     notifyListeners();
   }
 
@@ -139,14 +136,7 @@ class Contatos with ChangeNotifier {
         .doc(this._userId)
         .collection(subCollect)
         .doc(c.id)
-        .update({
-      'phone_number': c.telefone,
-      'name': c.nome,
-      'email': c.email,
-      'address': c.endereco,
-      'cep': c.cep,
-      'image_url': url
-    });
+        .update(c.toMap);
     notifyListeners();
   }
 }

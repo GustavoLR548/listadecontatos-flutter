@@ -17,10 +17,20 @@ class Contato with ChangeNotifier {
   final String _endereco;
   final String _cep;
   final String _telefone;
+  final String _aniversario;
   String _imageFile = 'N/A';
 
   Contato(this._id, this._nome, this._email, this._endereco, this._cep,
-      this._telefone, this._imageFile);
+      this._telefone, this._imageFile, this._aniversario);
+  Map<String, dynamic> get toMap => {
+        'phone_number': telefone,
+        'name': nome,
+        'email': email,
+        'address': endereco,
+        'cep': cep,
+        'birthday': aniversario,
+        'image_url': imageFile
+      };
 
   Color get color => availableColors[
       (this.nome.codeUnits[0] + this.nome.codeUnits[this.nome.length - 1]) %
@@ -39,6 +49,8 @@ class Contato with ChangeNotifier {
   String get telefone => this._telefone;
 
   String get imageFile => this._imageFile;
+
+  String get aniversario => this._aniversario;
 
   bool get pathExists => this._imageFile == 'N/A';
 

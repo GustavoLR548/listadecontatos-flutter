@@ -28,24 +28,24 @@ class _ContatoEditorState extends State<ContatoEditor> {
   void initState() {
     if (widget.contato == null) {
       _formData = {
-        'Name': '',
-        'Email': '',
+        'name': '',
+        'email': '',
         'Endereco': '',
-        'Cep': '',
-        'Phone_number': '',
+        'cep': '',
+        'phone_number': '',
       };
     } else {
       _addressController.text = widget.contato?.endereco ?? '';
 
       if (!(widget.contato?.pathExists ?? false))
-        _formData['Image_path'] = widget.contato?.imageFile ?? '';
+        _formData['image_path'] = widget.contato?.imageFile ?? '';
       updateContato = true;
       _formData.addAll({
-        'Name': widget.contato?.nome ?? '',
-        'Email': widget.contato?.email ?? '',
-        'Address': _addressController.text,
-        'Cep': widget.contato?.cep ?? '',
-        'Phone_number': widget.contato?.telefone ?? '',
+        'name': widget.contato?.nome ?? '',
+        'email': widget.contato?.email ?? '',
+        'address': _addressController.text,
+        'cep': widget.contato?.cep ?? '',
+        'phone_number': widget.contato?.telefone ?? '',
       });
     }
     super.initState();
@@ -57,7 +57,7 @@ class _ContatoEditorState extends State<ContatoEditor> {
   }
 
   void _storeUserImageFile(String image) {
-    _formData['Image_path'] = image;
+    _formData['image_path'] = image;
   }
 
   _save() {
@@ -68,21 +68,24 @@ class _ContatoEditorState extends State<ContatoEditor> {
         provider.update(
             Contato(
                 widget.contato?.id ?? '',
-                _formData['Name'] ?? '',
-                _formData['Email'] ?? '',
-                _formData['Address'] ?? '',
-                _formData['Cep'] ?? '',
-                _formData['Phone_number'] ?? '',
-                widget.contato?.imageFile ?? ''),
-            File(_formData['Image_path'] ?? ''));
+                _formData['name'] ?? '',
+                _formData['email'] ?? '',
+                _formData['address'] ?? '',
+                _formData['cep'] ?? '',
+                _formData['phone_number'] ?? '',
+                widget.contato?.imageFile ?? '',
+                _formData['birthday'] ?? ''),
+            File(_formData['image_path'] ?? ''));
       } else {
         provider.add(
-            _formData['Name'] ?? '',
-            _formData['Email'] ?? '',
-            _formData['Address'] ?? '',
-            _formData['Cep'] ?? '',
-            _formData['Phone_number'] ?? '',
-            File(_formData['Image_path'] ?? ''));
+          _formData['name'] ?? '',
+          _formData['email'] ?? '',
+          _formData['address'] ?? '',
+          _formData['cep'] ?? '',
+          _formData['phone_number'] ?? '',
+          _formData['birthday'] ?? '',
+          File(_formData['image_path'] ?? ''),
+        );
       }
       Navigator.of(context).pop();
     }
@@ -115,7 +118,7 @@ class _ContatoEditorState extends State<ContatoEditor> {
                 _mySizedBox(),
                 PickUserImage(
                   _storeUserImageFile,
-                  initialValue: _formData['Image_path'],
+                  initialValue: _formData['image_path'],
                 ),
                 _mySizedBox(),
                 _buildNameTFF(borderColor, context),
@@ -146,7 +149,7 @@ class _ContatoEditorState extends State<ContatoEditor> {
 
   _buildNameTFF(Color borderColor, BuildContext context) {
     return TextFormField(
-      initialValue: _formData['Name'],
+      initialValue: _formData['name'],
       maxLength: 20,
       decoration: InputDecoration(
         icon: Icon(Icons.person),
@@ -160,10 +163,10 @@ class _ContatoEditorState extends State<ContatoEditor> {
       keyboardType: TextInputType.name,
       onSaved: (value) {
         if (value == null) {
-          _formData['Name'] = '';
+          _formData['name'] = '';
           return;
         }
-        _formData['Name'] = value.trim();
+        _formData['name'] = value.trim();
       },
       validator: (value) {
         if (value == null) return 'O valor não pode ser null';
@@ -179,7 +182,7 @@ class _ContatoEditorState extends State<ContatoEditor> {
 
   _buildPhoneNumberTFF(Color borderColor, BuildContext context) {
     return TextFormField(
-      initialValue: _formData['Phone_number'],
+      initialValue: _formData['phone_number'],
       inputFormatters: <TextInputFormatter>[
         FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
       ],
@@ -194,10 +197,10 @@ class _ContatoEditorState extends State<ContatoEditor> {
       keyboardType: TextInputType.phone,
       onSaved: (value) {
         if (value == null) {
-          _formData['Phone_number'] = '';
+          _formData['phone_number'] = '';
           return;
         }
-        _formData['Phone_number'] = value.trim();
+        _formData['phone_number'] = value.trim();
       },
       validator: (value) {
         if (value == null) return 'o valor não pode ser nulo';
@@ -211,23 +214,23 @@ class _ContatoEditorState extends State<ContatoEditor> {
 
   _buildEmailTFF(Color borderColor, BuildContext context) {
     return TextFormField(
-      initialValue: _formData['Email'],
+      initialValue: _formData['email'],
       decoration: InputDecoration(
           icon: Icon(Icons.email),
           enabledBorder: OutlineInputBorder(
               borderSide: BorderSide(color: borderColor),
               borderRadius: BorderRadius.circular(5.0)),
-          labelText: 'Email',
+          labelText: 'email',
           counterStyle: Theme.of(context).textTheme.bodyText1,
           labelStyle: Theme.of(context).textTheme.bodyText2),
       maxLength: 50,
       keyboardType: TextInputType.emailAddress,
       onSaved: (value) {
         if (value == null) {
-          _formData['Email'] = '';
+          _formData['email'] = '';
           return;
         }
-        _formData['Email'] = value.trim();
+        _formData['email'] = value.trim();
       },
       validator: (value) {
         if (value == null) return 'o valor não pode ser nulo';
@@ -254,10 +257,10 @@ class _ContatoEditorState extends State<ContatoEditor> {
       keyboardType: TextInputType.streetAddress,
       onSaved: (value) {
         if (value == null) {
-          _formData['Address'] = '';
+          _formData['address'] = '';
           return;
         }
-        _formData['Address'] = value.trim();
+        _formData['address'] = value.trim();
       },
       validator: (value) {
         if (value == null) return 'o valor não pode ser nulo';
@@ -271,13 +274,13 @@ class _ContatoEditorState extends State<ContatoEditor> {
 
   _buildCepTFF(BuildContext ctx, Color borderColor) {
     return TextFormField(
-      initialValue: _formData['Cep'],
+      initialValue: _formData['cep'],
       decoration: InputDecoration(
         icon: Icon(Icons.add_location_rounded),
         enabledBorder: OutlineInputBorder(
             borderSide: BorderSide(color: borderColor),
             borderRadius: BorderRadius.circular(5.0)),
-        labelText: 'CEP',
+        labelText: 'cEP',
         labelStyle: Theme.of(context).textTheme.bodyText2,
       ),
       maxLengthEnforcement: MaxLengthEnforcement.enforced,
@@ -285,10 +288,10 @@ class _ContatoEditorState extends State<ContatoEditor> {
       keyboardType: TextInputType.number,
       onSaved: (value) {
         if (value == null) {
-          _formData['Cep'] = '';
+          _formData['cep'] = '';
           return;
         }
-        _formData['Cep'] = value.trim();
+        _formData['cep'] = value.trim();
       },
       onChanged: (value) async {
         if (value.length != 8) return;
@@ -309,7 +312,7 @@ class _ContatoEditorState extends State<ContatoEditor> {
         setState(() {
           _addressController.text =
               result['street'] + ', ' + result['city'] + ', ' + result['state'];
-          _formData['Address'] = _addressController.text;
+          _formData['address'] = _addressController.text;
         });
       },
       validator: (value) {
