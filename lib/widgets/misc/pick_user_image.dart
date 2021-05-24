@@ -2,10 +2,17 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:listadecontatos/widgets/misc/icontext.dart';
+import 'package:image_cropper/image_cropper.dart';
+
+final placeholder = File('assets/images/icon.jpg');
 
 class PickUserImage extends StatefulWidget {
   final void Function(File pickedImage) sendImageData;
-  PickUserImage(this.sendImageData);
+  final ImageSource imageSource;
+  final File? initialValue;
+  PickUserImage(this.sendImageData,
+      {this.imageSource = ImageSource.camera, this.initialValue});
 
   @override
   _PickUserImageState createState() => _PickUserImageState();
@@ -13,19 +20,39 @@ class PickUserImage extends StatefulWidget {
 
 class _PickUserImageState extends State<PickUserImage> {
   File? _pickedImage;
-  final placeholder = File('assets/images/icon.jpg');
+
+  void initState() {
+    super.initState();
+    if (widget.initialValue != null) _pickedImage = widget.initialValue;
+  }
 
   void _pickImage() async {
     final picker = ImagePicker();
     final pickedImage = await picker.getImage(
-        source: ImageSource.camera,
-        imageQuality: 80,
-        maxHeight: 150,
-        maxWidth: 150);
+      source: widget.imageSource,
+    );
     if (pickedImage == null) return;
     final pickedImageFile = File(pickedImage.path);
+    File? croppedFile = await ImageCropper.cropImage(
+        maxHeight: 250,
+        maxWidth: 250,
+        compressQuality: 80,
+        sourcePath: pickedImageFile.path,
+        aspectRatioPresets: [
+          CropAspectRatioPreset.square,
+        ],
+        androidUiSettings: AndroidUiSettings(
+            toolbarTitle: 'Recorte sua imagem',
+            toolbarColor: Theme.of(context).primaryColor,
+            toolbarWidgetColor: Theme.of(context).accentColor,
+            initAspectRatio: CropAspectRatioPreset.original,
+            lockAspectRatio: true),
+        iosUiSettings: IOSUiSettings(
+          minimumAspectRatio: 1.0,
+        ));
+    if (croppedFile == null) return;
     setState(() {
-      _pickedImage = pickedImageFile;
+      _pickedImage = croppedFile;
     });
     widget.sendImageData(_pickedImage ?? placeholder);
   }
@@ -42,7 +69,7 @@ class _PickUserImageState extends State<PickUserImage> {
       ),
       TextButton(
         onPressed: _pickImage,
-        child: Icon(Icons.image),
+        child: IconText('Selecionar Imagem', Icons.image),
       )
     ]);
   }

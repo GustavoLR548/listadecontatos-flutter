@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:listadecontatos/models/contato.dart';
+import 'package:listadecontatos/widgets/misc/circle_fade_in_avatar.dart';
 
 const availableColors = const [
   Colors.red,
@@ -25,13 +26,19 @@ class ContatoCard extends StatelessWidget {
       },
       leading: Hero(
         tag: contato.id,
-        child: CircleAvatar(
-          backgroundColor: contato.color,
-          child: FittedBox(
-            fit: BoxFit.contain,
-            child: Text(contato.initials.toUpperCase()),
-          ),
-        ),
+        child: !contato.pathExists
+            ? CircleFadeInAvatar(
+                contato.imageFile,
+                size: 50,
+              )
+            : CircleAvatar(
+                backgroundColor: contato.color,
+                radius: 25,
+                child: FittedBox(
+                  fit: BoxFit.contain,
+                  child: Text(contato.initials.toUpperCase()),
+                ),
+              ),
       ),
       title: Text(
         contato.nome,

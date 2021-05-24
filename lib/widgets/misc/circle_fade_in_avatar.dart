@@ -7,11 +7,11 @@ class CircleFadeInAvatar extends StatelessWidget {
   final double size;
 
   CircleFadeInAvatar(
-    this.profilePicture, [
+    this.profilePicture, {
     this.size = 125,
     this.widthVariation = 0,
     this.placeholderPath = 'assets/images/icon.jpg',
-  ]);
+  });
   @override
   Widget build(BuildContext context) {
     return ClipOval(
@@ -19,7 +19,7 @@ class CircleFadeInAvatar extends StatelessWidget {
         child: FadeInImage(
           width: this.size,
           height: this.size,
-          fit: BoxFit.fitWidth,
+          fit: BoxFit.fill,
           placeholder: AssetImage(this.placeholderPath),
           image: NetworkImage(this.profilePicture),
         ));

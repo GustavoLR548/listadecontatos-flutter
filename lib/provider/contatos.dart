@@ -1,9 +1,13 @@
+import 'dart:io';
+
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:listadecontatos/models/contato.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Contatos with ChangeNotifier {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final _firestore = FirebaseFirestore.instance;
+  final imageStorage = FirebaseStorage.instance;
   String mainCollec = 'users';
   String subCollect = 'allContacts';
   String _userId = '-1';
@@ -32,13 +36,13 @@ class Contatos with ChangeNotifier {
     _items = documents.map((element) {
       Map<String, dynamic> contatoData = element.data();
       return Contato(
-        element.id,
-        contatoData['name'],
-        contatoData['email'],
-        contatoData['address'],
-        contatoData['cep'],
-        contatoData['phone_number'],
-      );
+          element.id,
+          contatoData['name'],
+          contatoData['email'],
+          contatoData['address'],
+          contatoData['cep'],
+          contatoData['phone_number'],
+          contatoData['image_url']);
     }).toList();
 
     notifyListeners();
@@ -48,8 +52,20 @@ class Contatos with ChangeNotifier {
       _items.firstWhere((element) => element.id == id);
 
   Future<void> add(String name, String email, String address, String cep,
-      String phoneNumber) async {
+      String phoneNumber, File image) async {
+    String url = 'N/A';
     final contatoID = DateTime.now().toIso8601String();
+    if (image.existsSync()) {
+      final ref = imageStorage
+          .ref()
+          .child('contact_image')
+          .child(_userId + contatoID + '.jpg');
+
+      await ref.putFile(image);
+
+      url = await ref.getDownloadURL();
+    }
+
     await _firestore
         .collection(this.mainCollec)
         .doc(this._userId)
@@ -60,28 +76,61 @@ class Contatos with ChangeNotifier {
       'name': name,
       'email': email,
       'address': address,
-      'cep': cep
+      'cep': cep,
+      'image_url': url
     });
 
-    _items.add(Contato(contatoID, name, email, address, cep, phoneNumber));
+    _items.add(Contato(contatoID, name, email, address, cep, phoneNumber, url));
     notifyListeners();
   }
 
   Future<void> remove(String id) async {
+    int index = _items.indexWhere((element) => element.id == id);
+
+    if (index == -1) return;
+
+    final contactToRemove = _items[index];
+
+    if (contactToRemove.pathExists) {
+      final ref = imageStorage
+          .ref()
+          .child('contact_image')
+          .child(_userId + id + '.jpg');
+
+      ref.delete();
+    }
+
+    _items.remove(contactToRemove);
+
     await _firestore
         .collection(mainCollec)
         .doc(_userId)
         .collection(subCollect)
         .doc(id)
         .delete();
-    _items.removeWhere((element) => element.id == id);
+
     notifyListeners();
   }
 
-  Future<void> update(Contato c) async {
+  Future<void> update(Contato c, File image) async {
     int index = _items.indexWhere((element) => element.id == c.id);
 
     if (index == -1) return;
+
+    String url = 'N/A';
+
+    if (image.existsSync()) {
+      final ref = imageStorage
+          .ref()
+          .child('contact_image')
+          .child(_userId + c.id + '.jpg');
+
+      await ref.putFile(image);
+
+      url = await ref.getDownloadURL();
+    }
+
+    c.imageFile = url;
 
     _items[index] = c;
 
@@ -95,7 +144,8 @@ class Contatos with ChangeNotifier {
       'name': c.nome,
       'email': c.email,
       'address': c.endereco,
-      'cep': c.cep
+      'cep': c.cep,
+      'image_url': url
     });
     notifyListeners();
   }

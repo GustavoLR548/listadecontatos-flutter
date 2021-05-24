@@ -12,9 +12,8 @@ class IconText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10),
-        width: double.infinity,
+    return FittedBox(
+        fit: BoxFit.cover,
         child: RichText(
           text: TextSpan(
             children: [
