@@ -17,9 +17,10 @@ class ThemeChanger with ChangeNotifier {
 
   _setThemesDatas() {
     _lightThemeData = ThemeData(
-      primarySwatch: Colors.grey,
-      canvasColor: Colors.blueGrey,
+      primarySwatch: Colors.blueGrey,
+      canvasColor: Colors.grey.shade100,
       accentColor: Colors.grey.shade400,
+      cardColor: Colors.blueAccent.shade100,
       accentColorBrightness: Brightness.dark,
       fontFamily: 'Righteous-Regular',
       textTheme: ThemeData.light().textTheme.copyWith(
@@ -38,18 +39,6 @@ class ThemeChanger with ChangeNotifier {
             color: Colors.black,
             fontWeight: FontWeight.bold,
           ),
-          headline4: TextStyle(
-              fontSize: 48,
-              foreground: Paint()
-                ..style = PaintingStyle.stroke
-                ..strokeWidth = 1
-                ..color = Colors.black),
-          headline5: TextStyle(
-              fontSize: 150,
-              foreground: Paint()
-                ..style = PaintingStyle.stroke
-                ..strokeWidth = 1
-                ..color = Colors.black),
           bodyText1: TextStyle(fontSize: 12, fontWeight: FontWeight.normal),
           bodyText2: TextStyle(
               fontSize: 16, fontWeight: FontWeight.normal, letterSpacing: 0.5)),
@@ -59,6 +48,7 @@ class ThemeChanger with ChangeNotifier {
       canvasColor: Color(0xFF00183f),
       accentColor: Colors.indigo.shade400,
       accentColorBrightness: Brightness.dark,
+      cardColor: Colors.blue.shade800,
       fontFamily: 'Righteous-Regular',
       textTheme: ThemeData.dark().textTheme.copyWith(
           headline1: TextStyle(
@@ -76,18 +66,6 @@ class ThemeChanger with ChangeNotifier {
             color: Colors.white,
             fontWeight: FontWeight.bold,
           ),
-          headline4: TextStyle(
-              fontSize: 48,
-              foreground: Paint()
-                ..style = PaintingStyle.stroke
-                ..strokeWidth = 1
-                ..color = Colors.black),
-          headline5: TextStyle(
-              fontSize: 150,
-              foreground: Paint()
-                ..style = PaintingStyle.stroke
-                ..strokeWidth = 1
-                ..color = Colors.black),
           headline6: TextStyle(color: Colors.black),
           bodyText1: TextStyle(
               fontSize: 12, fontWeight: FontWeight.normal, color: Colors.white),

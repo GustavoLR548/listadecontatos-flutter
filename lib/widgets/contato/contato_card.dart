@@ -41,11 +41,11 @@ class ContatoCard extends StatelessWidget {
       ),
       title: Text(
         contato.nome,
-        style: TextStyle(color: Colors.white),
       ),
       subtitle: Text(
-        this.showBirthday ? this.contato.aniversario : this.contato.telefone,
-        style: TextStyle(color: Colors.white),
+        this.showBirthday
+            ? this.contato.aniversarioFormatted
+            : this.contato.telefone,
       ),
     );
   }

@@ -44,7 +44,6 @@ class Homepage extends StatelessWidget {
             ? Center(
                 child: const Text(
                   'Nenhum contato inserido',
-                  style: TextStyle(color: Colors.white),
                 ),
               )
             : Padding(

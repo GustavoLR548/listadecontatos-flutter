@@ -2,8 +2,8 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:listadecontatos/provider/auth.dart';
 import 'package:listadecontatos/provider/contatos.dart';
 import 'package:listadecontatos/provider/themes.dart';
+import 'package:listadecontatos/screens/contato/BirthdayScaffold.dart';
 import 'package:listadecontatos/screens/contato/ContatoPage.dart';
-import 'package:listadecontatos/screens/contato/birthday/BirthdayEditor.dart';
 import 'package:listadecontatos/screens/homepage/Homepage.dart';
 import 'package:listadecontatos/screens/login/LoginAndSignup.dart';
 import 'package:listadecontatos/screens/Configuration.dart';
@@ -58,7 +58,7 @@ class MyMaterialApp extends StatelessWidget {
         Homepage.routeName: (ctx) => Homepage(),
         ContatoPage.routeName: (ctx) => ContatoPage(),
         Configuration.routeName: (ctx) => Configuration(),
-        BirthdayEditor.routeName: (ctx) => BirthdayEditor()
+        BirthdayScaffold.routeName: (ctx) => BirthdayScaffold()
       },
     );
   }

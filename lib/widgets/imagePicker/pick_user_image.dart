@@ -77,9 +77,11 @@ class _PickUserImageState extends State<PickUserImage> {
         backgroundColor: Colors.grey,
         backgroundImage: buildImage(),
       ),
-      TextButton(
-        onPressed: _pickAndFormatImage,
-        child: IconText('Selecionar Imagem', Icons.image),
+      Padding(
+        padding: const EdgeInsets.all(12),
+        child: GestureDetector(
+            onTap: _pickAndFormatImage,
+            child: IconText('Selecionar Imagem', Icons.image)),
       )
     ]);
   }

@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:intl/intl.dart';
 import 'package:listadecontatos/models/contato.dart';
 import 'package:listadecontatos/provider/contatos.dart';
 import 'package:listadecontatos/provider/themes.dart';
@@ -293,7 +292,7 @@ class _ContatoEditorState extends State<ContatoEditor> {
         enabledBorder: OutlineInputBorder(
             borderSide: BorderSide(color: borderColor),
             borderRadius: BorderRadius.circular(5.0)),
-        labelText: 'cEP',
+        labelText: 'CEP',
         labelStyle: Theme.of(context).textTheme.bodyText2,
       ),
       maxLengthEnforcement: MaxLengthEnforcement.enforced,

@@ -12,23 +12,26 @@ class IconText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FittedBox(
-        fit: BoxFit.cover,
-        child: RichText(
-          text: TextSpan(
-            children: [
-              WidgetSpan(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                  child: Icon(
-                    icon,
-                    color: Theme.of(context).accentColor,
+    return Card(
+      elevation: 10,
+      child: FittedBox(
+          fit: BoxFit.cover,
+          child: RichText(
+            text: TextSpan(
+              children: [
+                WidgetSpan(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                    child: Icon(
+                      icon,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
-              ),
-              TextSpan(text: text),
-            ],
-          ),
-        ));
+                TextSpan(text: text),
+              ],
+            ),
+          )),
+    );
   }
 }

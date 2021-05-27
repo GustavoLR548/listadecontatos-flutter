@@ -6,8 +6,6 @@ import 'package:listadecontatos/widgets/misc/DateChooser.dart';
 import 'package:provider/provider.dart';
 
 class BirthdayEditor extends StatefulWidget {
-  static const routeName = '';
-
   final Contato? initialValue;
   BirthdayEditor({this.initialValue});
   @override
@@ -46,7 +44,9 @@ class _BirthdayEditorState extends State<BirthdayEditor> {
           key: _formKey,
           child: Column(
             children: [
-              _buildContatoChooser(),
+              Padding(
+                  padding: const EdgeInsets.all(15),
+                  child: _buildContatoChooser()),
               _mySizedBox(),
               c == null
                   ? Text('Nenhum contato escolhido')

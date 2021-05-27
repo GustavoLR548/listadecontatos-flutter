@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:listadecontatos/models/contato.dart';
 import 'package:listadecontatos/provider/contatos.dart';
 import 'package:listadecontatos/screens/contato/birthday/BirthdayEditor.dart';
@@ -7,6 +8,8 @@ import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class BirthdayScaffold extends StatefulWidget {
+  static const routeName = '/birthday-scaffold';
+
   @override
   _BirthdayScaffoldState createState() => _BirthdayScaffoldState();
 }
@@ -26,10 +29,11 @@ class _BirthdayScaffoldState extends State<BirthdayScaffold> {
     }
   }
 
+  void updateSelectedEvents(DateTime d) => this._selectedEvents =
+      Provider.of<Contatos>(context, listen: false).getContatoByBirthdayDay(d);
+
   @override
   Widget build(BuildContext context) {
-    final today = DateTime.now();
-
     return Scaffold(
       appBar: AppBar(
         title: Text('Calendário de Aniversariantes'),
@@ -41,19 +45,21 @@ class _BirthdayScaffoldState extends State<BirthdayScaffold> {
             Card(
               clipBehavior: Clip.antiAlias,
               margin: const EdgeInsets.all(8),
+              elevation: 8,
               child: TableCalendar<Contato>(
-                  selectedDayPredicate: (day) {
-                    return isSameDay(this._selectedDay, day);
-                  },
+                  daysOfWeekStyle: DaysOfWeekStyle(
+                    dowTextFormatter: (date, locale) =>
+                        DateFormat.E(locale).format(date)[0].toUpperCase(),
+                  ),
+                  selectedDayPredicate: (day) =>
+                      isSameDay(this._selectedDay, day),
                   onDaySelected: (DateTime selectedDay, DateTime focusedDay) {
                     setState(() {
                       this._selectedDay = selectedDay;
                       this._focusedDay = focusedDay;
                       // update `_focusedDay` here as well
 
-                      this._selectedEvents =
-                          Provider.of<Contatos>(context, listen: false)
-                              .getContatoByBirthdayDay(_selectedDay);
+                      updateSelectedEvents(_selectedDay);
                     });
                   },
                   eventLoader: (day) =>
@@ -61,6 +67,8 @@ class _BirthdayScaffoldState extends State<BirthdayScaffold> {
                           .getContatoByBirthdayDay(day),
                   locale: 'pt_PT',
                   headerStyle: HeaderStyle(
+                      formatButtonVisible: false,
+                      titleCentered: true,
                       decoration:
                           BoxDecoration(color: Theme.of(context).primaryColor)),
                   calendarStyle: CalendarStyle(
@@ -70,9 +78,9 @@ class _BirthdayScaffoldState extends State<BirthdayScaffold> {
                       selectedDecoration: BoxDecoration(
                           shape: BoxShape.circle,
                           color: Theme.of(context).accentColor)),
-                  focusedDay: today,
-                  firstDay: DateTime(today.year, 1, 0),
-                  lastDay: DateTime(today.year, 12, 31)),
+                  focusedDay: _focusedDay,
+                  firstDay: DateTime(_focusedDay.year, 1, 1),
+                  lastDay: DateTime(_focusedDay.year, 12, 31)),
             ),
             ListView.builder(
                 itemCount: _selectedEvents.length,
@@ -81,22 +89,30 @@ class _BirthdayScaffoldState extends State<BirthdayScaffold> {
                 itemBuilder: (ctx, index) => ContatoCard(
                       Key(_selectedEvents[index].id),
                       _selectedEvents[index],
-                      () {
-                        Navigator.of(context).push(MaterialPageRoute<void>(
-                            builder: (context) => BirthdayEditor(
-                                  initialValue: _selectedEvents[index],
-                                )));
+                      () async {
+                        await Navigator.of(context)
+                            .push(MaterialPageRoute<void>(
+                                builder: (context) => BirthdayEditor(
+                                      initialValue: _selectedEvents[index],
+                                    )));
+                        setState(() {
+                          updateSelectedEvents(_selectedDay);
+                        });
                       },
                       showBirthday: true,
                     )),
           ],
         ),
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
-        onPressed: () {
-          Navigator.of(context).push(
+        onPressed: () async {
+          await Navigator.of(context).push(
               MaterialPageRoute<void>(builder: (context) => BirthdayEditor()));
+          setState(() {
+            updateSelectedEvents(_selectedDay);
+          });
         },
       ),
     );
