@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:listadecontatos/models/contato.dart';
 import 'package:listadecontatos/provider/contatos.dart';
-import 'package:listadecontatos/screens/ContatoPage.dart';
+import 'package:listadecontatos/screens/contato/ContatoPage.dart';
 import 'package:listadecontatos/widgets/contato/contato_card.dart';
 import 'package:listadecontatos/widgets/drawer/drawer.dart';
 import 'package:listadecontatos/widgets/search/contatos_searcher.dart';

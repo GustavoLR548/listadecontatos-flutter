@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:listadecontatos/models/contato.dart';
 import 'package:listadecontatos/provider/contatos.dart';
-import 'package:listadecontatos/screens/ContatoEditor.dart';
+import 'package:listadecontatos/screens/contato/ContatoEditor.dart';
 import 'package:provider/provider.dart';
 
 class MyPopMenuButton extends StatelessWidget {

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 import 'package:listadecontatos/models/contato.dart';
 import 'package:listadecontatos/provider/contatos.dart';
 import 'package:listadecontatos/provider/themes.dart';
@@ -33,6 +34,7 @@ class _ContatoEditorState extends State<ContatoEditor> {
         'Endereco': '',
         'cep': '',
         'phone_number': '',
+        'birthday': ''
       };
     } else {
       _addressController.text = widget.contato?.endereco ?? '';
@@ -46,6 +48,7 @@ class _ContatoEditorState extends State<ContatoEditor> {
         'address': _addressController.text,
         'cep': widget.contato?.cep ?? '',
         'phone_number': widget.contato?.telefone ?? '',
+        'birthday': widget.contato?.aniversario ?? ''
       });
     }
     super.initState();
@@ -58,6 +61,27 @@ class _ContatoEditorState extends State<ContatoEditor> {
 
   void _storeUserImageFile(String image) {
     _formData['image_path'] = image;
+  }
+
+  void _chooseDate(BuildContext ctx) {
+    DateTime currTime = DateTime.now().add(Duration(days: 1));
+    showDatePicker(
+            context: context,
+            locale: const Locale('pt', 'PT'),
+            initialDate: currTime,
+            firstDate: currTime,
+            lastDate: DateTime(currTime.year + 1))
+        .then((pickedDate) {
+      if (pickedDate == null) return;
+      setState(() {
+        _formData['birthday'] = pickedDate.toIso8601String();
+      });
+    });
+  }
+
+  String _selectedDateInText() {
+    return DateFormat("dd/MM/yyyy")
+        .format(DateTime.parse(_formData['birthday'] ?? ''));
   }
 
   _save() {
@@ -131,6 +155,8 @@ class _ContatoEditorState extends State<ContatoEditor> {
                 _mySizedBox(),
                 _buildAddressTFF(borderColor, context),
                 _mySizedBox(),
+                _buildDateBox(),
+                _mySizedBox(),
                 Center(
                   child: ElevatedButton(
                       onPressed: _save, child: Text('Salvar Contato')),
@@ -141,13 +167,13 @@ class _ContatoEditorState extends State<ContatoEditor> {
     );
   }
 
-  _mySizedBox() {
+  SizedBox _mySizedBox() {
     return const SizedBox(
       height: 20,
     );
   }
 
-  _buildNameTFF(Color borderColor, BuildContext context) {
+  Widget _buildNameTFF(Color borderColor, BuildContext context) {
     return TextFormField(
       initialValue: _formData['name'],
       maxLength: 20,
@@ -180,7 +206,7 @@ class _ContatoEditorState extends State<ContatoEditor> {
     );
   }
 
-  _buildPhoneNumberTFF(Color borderColor, BuildContext context) {
+  Widget _buildPhoneNumberTFF(Color borderColor, BuildContext context) {
     return TextFormField(
       initialValue: _formData['phone_number'],
       inputFormatters: <TextInputFormatter>[
@@ -212,7 +238,7 @@ class _ContatoEditorState extends State<ContatoEditor> {
     );
   }
 
-  _buildEmailTFF(Color borderColor, BuildContext context) {
+  Widget _buildEmailTFF(Color borderColor, BuildContext context) {
     return TextFormField(
       initialValue: _formData['email'],
       decoration: InputDecoration(
@@ -242,7 +268,7 @@ class _ContatoEditorState extends State<ContatoEditor> {
     );
   }
 
-  _buildAddressTFF(Color borderColor, BuildContext context) {
+  Widget _buildAddressTFF(Color borderColor, BuildContext context) {
     return TextFormField(
       controller: _addressController,
       maxLines: 3,
@@ -272,7 +298,7 @@ class _ContatoEditorState extends State<ContatoEditor> {
     );
   }
 
-  _buildCepTFF(BuildContext ctx, Color borderColor) {
+  Widget _buildCepTFF(BuildContext ctx, Color borderColor) {
     return TextFormField(
       initialValue: _formData['cep'],
       decoration: InputDecoration(
@@ -322,6 +348,28 @@ class _ContatoEditorState extends State<ContatoEditor> {
         }
         return null;
       },
+    );
+  }
+
+  Widget _buildDateBox() {
+    return Container(
+      height: 70,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          Expanded(
+            child: Text(
+              _formData['targetTime'] == ''
+                  ? 'Nenhuma data selecionada'
+                  : 'Data selecionada : ' + _selectedDateInText(),
+              textAlign: TextAlign.center,
+            ),
+          ),
+          TextButton(
+              onPressed: () => _chooseDate(context),
+              child: Text('Escolha uma data'))
+        ],
+      ),
     );
   }
 }
