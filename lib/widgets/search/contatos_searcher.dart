@@ -89,6 +89,7 @@ class ContatoSearcher extends SearchDelegate<Contato> {
                   shrinkWrap: true,
                   scrollDirection: Axis.vertical,
                   itemCount: c.length,
+                  physics: NeverScrollableScrollPhysics(),
                   itemBuilder: (context, index) =>
                       ContatoCard(Key(c[index].id), c[index], () {
                         selectedContato = c[index];

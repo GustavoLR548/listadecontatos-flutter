@@ -7,6 +7,7 @@ import 'package:listadecontatos/models/contato.dart';
 import 'package:listadecontatos/provider/contatos.dart';
 import 'package:listadecontatos/provider/themes.dart';
 import 'package:listadecontatos/widgets/imagePicker/pick_user_image.dart';
+import 'package:listadecontatos/widgets/misc/DateChooser.dart';
 import 'package:provider/provider.dart';
 import 'package:via_cep_flutter/via_cep_flutter.dart';
 
@@ -61,27 +62,6 @@ class _ContatoEditorState extends State<ContatoEditor> {
 
   void _storeUserImageFile(String image) {
     _formData['image_path'] = image;
-  }
-
-  void _chooseDate(BuildContext ctx) {
-    DateTime currTime = DateTime.now().add(Duration(days: 1));
-    showDatePicker(
-            context: context,
-            locale: const Locale('pt', 'PT'),
-            initialDate: currTime,
-            firstDate: currTime,
-            lastDate: DateTime(currTime.year + 1))
-        .then((pickedDate) {
-      if (pickedDate == null) return;
-      setState(() {
-        _formData['birthday'] = pickedDate.toIso8601String();
-      });
-    });
-  }
-
-  String _selectedDateInText() {
-    return DateFormat("dd/MM/yyyy")
-        .format(DateTime.parse(_formData['birthday'] ?? ''));
   }
 
   _save() {
@@ -155,7 +135,14 @@ class _ContatoEditorState extends State<ContatoEditor> {
                 _mySizedBox(),
                 _buildAddressTFF(borderColor, context),
                 _mySizedBox(),
-                _buildDateBox(),
+                DateChooser(
+                  _formData['birthday'] ?? '',
+                  onChoose: (value) {
+                    setState(() {
+                      _formData['birthday'] = value;
+                    });
+                  },
+                ),
                 _mySizedBox(),
                 Center(
                   child: ElevatedButton(
@@ -348,28 +335,6 @@ class _ContatoEditorState extends State<ContatoEditor> {
         }
         return null;
       },
-    );
-  }
-
-  Widget _buildDateBox() {
-    return Container(
-      height: 70,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          Expanded(
-            child: Text(
-              _formData['targetTime'] == ''
-                  ? 'Nenhuma data selecionada'
-                  : 'Data selecionada : ' + _selectedDateInText(),
-              textAlign: TextAlign.center,
-            ),
-          ),
-          TextButton(
-              onPressed: () => _chooseDate(context),
-              child: Text('Escolha uma data'))
-        ],
-      ),
     );
   }
 }

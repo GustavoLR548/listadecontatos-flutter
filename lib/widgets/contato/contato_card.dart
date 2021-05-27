@@ -11,12 +11,11 @@ const availableColors = const [
 
 class ContatoCard extends StatelessWidget {
   final Contato contato;
+  final bool showBirthday;
   final Function onTap;
-  const ContatoCard(
-    Key key,
-    this.contato,
-    this.onTap,
-  ) : super(key: key);
+  const ContatoCard(Key key, this.contato, this.onTap,
+      {this.showBirthday = false})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -42,6 +41,10 @@ class ContatoCard extends StatelessWidget {
       ),
       title: Text(
         contato.nome,
+        style: TextStyle(color: Colors.white),
+      ),
+      subtitle: Text(
+        this.showBirthday ? this.contato.aniversario : this.contato.telefone,
         style: TextStyle(color: Colors.white),
       ),
     );

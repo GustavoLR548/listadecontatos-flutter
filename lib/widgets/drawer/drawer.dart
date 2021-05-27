@@ -3,6 +3,7 @@ import 'package:listadecontatos/provider/auth.dart';
 import 'package:listadecontatos/provider/themes.dart';
 import 'package:listadecontatos/screens/Configuration.dart';
 import 'package:listadecontatos/screens/contato/ContatoEditor.dart';
+import 'package:listadecontatos/screens/contato/birthday/BirthdayEditor.dart';
 import 'package:listadecontatos/widgets/drawer/drawer_item.dart';
 import 'package:provider/provider.dart';
 
@@ -57,6 +58,18 @@ class AppDrawer extends StatelessWidget {
             ),
             onTap: () => Navigator.of(context).push(MaterialPageRoute<void>(
                 builder: (context) => ContatoEditor()))),
+        Divider(),
+        DrawerItem(
+            title: Text(
+              'Aniversariantes',
+              style: Theme.of(context).textTheme.headline1,
+            ),
+            icon: Icon(
+              Icons.calendar_today_sharp,
+              color: iconColor,
+            ),
+            onTap: () =>
+                Navigator.of(context).pushNamed(BirthdayEditor.routeName)),
         Divider(),
         DrawerItem(
             title: Text(

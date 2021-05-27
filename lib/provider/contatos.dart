@@ -16,6 +16,10 @@ class Contatos with ChangeNotifier {
 
   List<Contato> get items => [..._items];
 
+  List<Contato> getContatoByBirthdayDay(DateTime d) => _items
+      .where((element) => DateTime.parse(element.aniversario).day == d.day)
+      .toList();
+
   int get size => _items.length;
 
   Contatos();
@@ -128,6 +132,24 @@ class Contatos with ChangeNotifier {
     }
 
     c.imageFile = url;
+
+    _items[index] = c;
+
+    await _firestore
+        .collection(this.mainCollec)
+        .doc(this._userId)
+        .collection(subCollect)
+        .doc(c.id)
+        .update(c.toMap);
+    notifyListeners();
+  }
+
+  Future<void> updateBirthday(Contato? c) async {
+    if (c == null) return;
+
+    int index = _items.indexWhere((element) => element.id == c.id);
+
+    if (index == -1) return;
 
     _items[index] = c;
 

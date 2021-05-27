@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 const availableColors = const [
   Colors.red,
@@ -17,7 +18,7 @@ class Contato with ChangeNotifier {
   final String _endereco;
   final String _cep;
   final String _telefone;
-  final String _aniversario;
+  String _aniversario;
   String _imageFile = 'N/A';
 
   Contato(this._id, this._nome, this._email, this._endereco, this._cep,
@@ -52,7 +53,14 @@ class Contato with ChangeNotifier {
 
   String get aniversario => this._aniversario;
 
+  String get aniversarioFormatted {
+    DateTime date = DateTime.parse(this._aniversario);
+    return DateFormat("dd/MM").format(date);
+  }
+
   bool get pathExists => this._imageFile == 'N/A';
+
+  set aniversario(String aniversario) => this._aniversario = aniversario;
 
   set imageFile(String imageFile) => this._imageFile = imageFile;
 
