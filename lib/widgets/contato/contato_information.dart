@@ -9,7 +9,8 @@ class ContatoInformation extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final deviceSize = MediaQuery.of(context).size;
-    return Column(
+    return ListView(
+      padding: const EdgeInsets.all(15),
       children: [
         Padding(
           padding: const EdgeInsets.only(top: 35, bottom: 25),
@@ -34,17 +35,19 @@ class ContatoInformation extends StatelessWidget {
         ),
         Text(
           selectedContato?.nome ?? '',
+          textAlign: TextAlign.center,
           style: Theme.of(context).textTheme.headline3,
         ),
         Divider(
-          color: Colors.white,
+          color: Colors.black,
         ),
         _buildSizedBox(),
         IconText(selectedContato?.telefone ?? '', Icons.phone),
         _buildSizedBox(),
         IconText(selectedContato?.email ?? '', Icons.email),
         _buildSizedBox(),
-        IconText(selectedContato?.endereco ?? '', Icons.location_city),
+        IconText(
+            (selectedContato?.enderecoSeparado ?? ''), Icons.location_city),
       ],
     );
   }

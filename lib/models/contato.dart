@@ -73,4 +73,41 @@ class Contato with ChangeNotifier {
 
     return result;
   }
+
+  String get enderecoSeparado {
+    String result = '';
+
+    final split = this._endereco.split(',');
+
+    if (split.length == 1) {
+      final tmp = this._endereco.split(' ');
+
+      String acumulator = '';
+      for (String i in tmp) {
+        if (acumulator.length + i.length < 33) {
+          acumulator += i;
+        } else {
+          result += acumulator + '\n';
+          acumulator = '';
+        }
+      }
+    } else {
+      int start = 0;
+      int end = 33;
+      while (end <= this._endereco.length) {
+        result += this._endereco.substring(start, end) + '\n';
+        start = end;
+
+        if (end + 33 > this._endereco.length) {
+          end = this._endereco.length;
+          result += this._endereco.substring(start, end) + '\n';
+          break;
+        } else {
+          end += 33;
+        }
+      }
+    }
+
+    return result;
+  }
 }

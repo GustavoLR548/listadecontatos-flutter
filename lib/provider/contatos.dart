@@ -17,6 +17,7 @@ class Contatos with ChangeNotifier {
   List<Contato> get items => [..._items];
 
   List<Contato> getContatoByBirthdayDay(DateTime d) => _items.where((element) {
+        if (DateTime.tryParse(element.aniversario) == null) return false;
         final date = DateTime.parse(element.aniversario);
         return date.day == d.day && date.month == d.month;
       }).toList();

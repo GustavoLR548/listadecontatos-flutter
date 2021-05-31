@@ -40,12 +40,9 @@ class _BirthdayScaffoldState extends State<BirthdayScaffold> {
       ),
       body: SingleChildScrollView(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Card(
-              clipBehavior: Clip.antiAlias,
-              margin: const EdgeInsets.all(8),
-              elevation: 8,
+            Padding(
+              padding: const EdgeInsets.all(8),
               child: TableCalendar<Contato>(
                   daysOfWeekStyle: DaysOfWeekStyle(
                     dowTextFormatter: (date, locale) =>
@@ -73,34 +70,39 @@ class _BirthdayScaffoldState extends State<BirthdayScaffold> {
                           BoxDecoration(color: Theme.of(context).primaryColor)),
                   calendarStyle: CalendarStyle(
                       todayDecoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Theme.of(context).accentColor),
+                          shape: BoxShape.circle, color: Colors.red),
                       selectedDecoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Theme.of(context).accentColor)),
+                          shape: BoxShape.circle, color: Colors.red)),
                   focusedDay: _focusedDay,
                   firstDay: DateTime(_focusedDay.year, 1, 1),
                   lastDay: DateTime(_focusedDay.year, 12, 31)),
             ),
-            ListView.builder(
-                itemCount: _selectedEvents.length,
-                shrinkWrap: true,
-                scrollDirection: Axis.vertical,
-                itemBuilder: (ctx, index) => ContatoCard(
-                      Key(_selectedEvents[index].id),
-                      _selectedEvents[index],
-                      () async {
-                        await Navigator.of(context)
-                            .push(MaterialPageRoute<void>(
-                                builder: (context) => BirthdayEditor(
-                                      initialValue: _selectedEvents[index],
-                                    )));
-                        setState(() {
-                          updateSelectedEvents(_selectedDay);
-                        });
-                      },
-                      showBirthday: true,
-                    )),
+            _selectedEvents.length == 0
+                ? Padding(
+                    padding: const EdgeInsets.all(15),
+                    child: Text(
+                      'Nenhum contato faz aniversário \n neste dia',
+                      textAlign: TextAlign.center,
+                    ))
+                : ListView.builder(
+                    itemCount: _selectedEvents.length,
+                    shrinkWrap: true,
+                    scrollDirection: Axis.vertical,
+                    itemBuilder: (ctx, index) => ContatoCard(
+                          Key(_selectedEvents[index].id),
+                          _selectedEvents[index],
+                          () async {
+                            await Navigator.of(context)
+                                .push(MaterialPageRoute<void>(
+                                    builder: (context) => BirthdayEditor(
+                                          initialValue: _selectedEvents[index],
+                                        )));
+                            setState(() {
+                              updateSelectedEvents(_selectedDay);
+                            });
+                          },
+                          showBirthday: true,
+                        )),
           ],
         ),
       ),

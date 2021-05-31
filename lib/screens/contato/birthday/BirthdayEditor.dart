@@ -45,7 +45,7 @@ class _BirthdayEditorState extends State<BirthdayEditor> {
           child: Column(
             children: [
               Padding(
-                  padding: const EdgeInsets.all(15),
+                  padding: const EdgeInsets.all(35),
                   child: _buildContatoChooser()),
               _mySizedBox(),
               c == null

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:listadecontatos/provider/auth.dart';
 import 'package:listadecontatos/provider/themes.dart';
 import 'package:listadecontatos/screens/Configuration.dart';
-import 'package:listadecontatos/screens/contato/BirthdayScaffold.dart';
+import 'package:listadecontatos/screens/contato/birthday/BirthdayScaffold.dart';
 import 'package:listadecontatos/screens/contato/ContatoEditor.dart';
 import 'package:listadecontatos/widgets/drawer/drawer_item.dart';
 import 'package:provider/provider.dart';
