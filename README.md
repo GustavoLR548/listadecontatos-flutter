@@ -9,8 +9,8 @@
  ## Objetivos (Parte 2)
  
  - [x] Buscar o endereço pelo CEP (usando a API Via Cep)
- - [ ] Permitir a inclusão de foto no contato
- - [ ] Incluir o eventos de data de aniversário, usando calendário
+ - [x] Permitir a inclusão de foto no contato
+ - [x] Incluir o eventos de data de aniversário, usando calendário
 
     
 
