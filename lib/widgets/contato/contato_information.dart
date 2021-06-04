@@ -17,9 +17,10 @@ class ContatoInformation extends StatelessWidget {
           child: Hero(
             tag: selectedContato?.id ?? '',
             child: !(selectedContato?.pathExists ?? false)
-                ? CircleFadeInAvatar(
-                    selectedContato?.imageFile ?? '',
-                    size: deviceSize.width / 3,
+                ? CircleAvatar(
+                    radius: deviceSize.width / 3,
+                    backgroundImage:
+                        NetworkImage(selectedContato?.imageFile ?? ''),
                   )
                 : CircleAvatar(
                     backgroundColor: selectedContato?.color ?? Colors.black,

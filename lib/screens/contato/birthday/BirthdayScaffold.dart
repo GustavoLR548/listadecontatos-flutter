@@ -95,7 +95,8 @@ class _BirthdayScaffoldState extends State<BirthdayScaffold> {
                             await Navigator.of(context)
                                 .push(MaterialPageRoute<void>(
                                     builder: (context) => BirthdayEditor(
-                                          initialValue: _selectedEvents[index],
+                                          initialContato:
+                                              _selectedEvents[index],
                                         )));
                             setState(() {
                               updateSelectedEvents(_selectedDay);
@@ -110,8 +111,10 @@ class _BirthdayScaffoldState extends State<BirthdayScaffold> {
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         onPressed: () async {
-          await Navigator.of(context).push(
-              MaterialPageRoute<void>(builder: (context) => BirthdayEditor()));
+          await Navigator.of(context).push(MaterialPageRoute<void>(
+              builder: (context) => BirthdayEditor(
+                    initialData: _selectedDay.toIso8601String(),
+                  )));
           setState(() {
             updateSelectedEvents(_selectedDay);
           });

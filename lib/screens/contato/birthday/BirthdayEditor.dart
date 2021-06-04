@@ -6,21 +6,28 @@ import 'package:listadecontatos/widgets/misc/DateChooser.dart';
 import 'package:provider/provider.dart';
 
 class BirthdayEditor extends StatefulWidget {
-  final Contato? initialValue;
-  BirthdayEditor({this.initialValue});
+  final Contato? initialContato;
+  final String? initialData;
+  BirthdayEditor({this.initialContato, this.initialData});
   @override
   _BirthdayEditorState createState() => _BirthdayEditorState();
 }
 
 class _BirthdayEditorState extends State<BirthdayEditor> {
   Contato? c;
+  String data = '';
 
   void initState() {
     super.initState();
 
-    if (widget.initialValue == null) return;
+    if (widget.initialContato == null) return;
 
-    c = widget.initialValue;
+    c = widget.initialContato;
+    data = widget.initialContato?.aniversario ?? '';
+
+    if (widget.initialData == null) return;
+
+    data = widget.initialData ?? '';
   }
 
   void _save() async {
@@ -49,10 +56,14 @@ class _BirthdayEditorState extends State<BirthdayEditor> {
                   child: _buildContatoChooser()),
               _mySizedBox(),
               c == null
-                  ? Text('Nenhum contato escolhido')
-                  : DateChooser(c?.aniversario ?? '', onChoose: (value) {
+                  ? Text(
+                      'Nenhum contato escolhido',
+                      textAlign: TextAlign.center,
+                    )
+                  : DateChooser(data, onChoose: (value) {
                       setState(() {
                         c?.aniversario = value;
+                        data = value;
                       });
                     }),
               _mySizedBox(),
